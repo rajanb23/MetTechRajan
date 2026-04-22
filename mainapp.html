@@ -3,1523 +3,1259 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U.S. Federal Health Technology Investment Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<title>MedTech Pulse — U.S. Healthcare Technology Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0a0e1a;
-  --bg2: #0f1525;
-  --bg3: #141c30;
-  --bg4: #1a2440;
-  --border: rgba(120,160,255,0.12);
-  --border2: rgba(120,160,255,0.22);
-  --accent: #4f8cff;
-  --accent2: #00d4aa;
-  --accent3: #ff6b6b;
-  --accent4: #f5a623;
-  --accent5: #b06aff;
-  --text: #e8edf8;
-  --text2: #8a9bc4;
-  --text3: #4a5a80;
-  --serif: 'DM Serif Display', Georgia, serif;
-  --mono: 'DM Mono', monospace;
-  --sans: 'Instrument Sans', sans-serif;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --glow: 0 0 40px rgba(79,140,255,0.08);
+/* ─── RESET & ROOT ─────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#f5f0e8;
+  --cream2:#ede7d9;
+  --cream3:#e2d9c8;
+  --ink:#1a1208;
+  --ink2:#3d3020;
+  --ink3:#6b5c40;
+  --ink4:#9a8c74;
+  --red:#c0392b;
+  --red2:#e74c3c;
+  --teal:#0d7a6b;
+  --teal2:#1abc9c;
+  --gold:#b8860b;
+  --gold2:#f0a500;
+  --blue:#1a4f8a;
+  --blue2:#2980b9;
+  --violet:#5b2d8e;
+  --violet2:#8e44ad;
+  --border:#c8bfad;
+  --border2:#b0a48e;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Space Grotesk',sans-serif;
+  --mono:'Space Mono',monospace;
+  --r:8px;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 15px; scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  min-height: 100vh;
-  line-height: 1.6;
-  overflow-x: hidden;
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);overflow-x:hidden;cursor:default}
+
+/* ─── NOISE TEXTURE OVERLAY ────────────────────────────── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:200px 200px;
+  pointer-events:none;z-index:1000;opacity:0.6;
 }
 
-/* GRID BACKGROUND */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(79,140,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(79,140,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
+/* ─── MASTHEAD ──────────────────────────────────────────── */
+.masthead{
+  border-bottom:3px solid var(--ink);
+  padding:0 2.5rem;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  height:72px;
+  position:sticky;top:0;
+  background:var(--cream);
+  z-index:500;
 }
+.masthead-left{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink3)}
+.masthead-center{text-align:center}
+.masthead-title{font-family:var(--serif);font-size:1.6rem;font-weight:900;letter-spacing:-0.02em;line-height:1}
+.masthead-title span{color:var(--red)}
+.masthead-sub{font-family:var(--mono);font-size:8px;letter-spacing:0.25em;text-transform:uppercase;color:var(--ink4);margin-top:2px}
+.masthead-right{display:flex;gap:4px;justify-content:flex-end}
+.section-pill{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;
+  padding:5px 12px;border-radius:20px;border:1.5px solid var(--border2);
+  background:transparent;color:var(--ink3);cursor:pointer;transition:all 0.2s;
+}
+.section-pill:hover{border-color:var(--ink);color:var(--ink)}
+.section-pill.active{background:var(--ink);color:var(--cream);border-color:var(--ink)}
 
-/* HEADER */
-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(10,14,26,0.92);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  padding: 0 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 60px;
+/* ─── HERO BANNER ───────────────────────────────────────── */
+.hero{
+  padding:3rem 2.5rem 2rem;
+  border-bottom:1px solid var(--border);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2rem;
+  align-items:end;
 }
-.header-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.hero-left{}
+.hero-kicker{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--red);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
 }
-.header-seal {
-  width: 36px;
-  height: 36px;
-  border: 1.5px solid var(--accent);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--accent);
-  letter-spacing: 0.05em;
-  flex-shrink: 0;
+.hero-kicker::before{content:'';display:block;width:32px;height:2px;background:var(--red)}
+.hero-headline{
+  font-family:var(--serif);font-size:3.2rem;font-weight:900;line-height:1.05;
+  letter-spacing:-0.03em;margin-bottom:1rem;
 }
-.header-title {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: var(--text2);
-  text-transform: uppercase;
+.hero-headline em{color:var(--teal);font-style:italic}
+.hero-deck{font-size:15px;color:var(--ink2);line-height:1.7;max-width:480px}
+.hero-right{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  padding-bottom:4px;
 }
-.header-title strong { color: var(--accent); font-weight: 500; }
-.header-nav {
-  display: flex;
-  gap: 2px;
+.stat-block{
+  border:1.5px solid var(--border);border-radius:var(--r);
+  padding:14px 16px;
+  transition:border-color 0.2s;cursor:default;
 }
-.nav-btn {
-  background: transparent;
-  border: none;
-  padding: 6px 14px;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text3);
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: all 0.15s;
-}
-.nav-btn:hover { color: var(--text2); background: rgba(79,140,255,0.07); }
-.nav-btn.active { color: var(--accent); background: rgba(79,140,255,0.12); }
-.header-status {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text3);
-}
-.status-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--accent2);
-  animation: pulse 2s infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.stat-block:hover{border-color:var(--border2)}
+.stat-num{font-family:var(--serif);font-size:2rem;font-weight:700;line-height:1;color:var(--ink)}
+.stat-unit{font-family:var(--mono);font-size:10px;color:var(--ink4);letter-spacing:0.1em;margin-top:4px}
+.stat-label{font-size:12px;color:var(--ink3);margin-top:4px}
 
-/* MAIN */
-main { position: relative; z-index: 1; padding: 2rem; max-width: 1440px; margin: 0 auto; }
+/* ─── LAYOUT ────────────────────────────────────────────── */
+.page{display:none;animation:reveal 0.35s ease}
+.page.active{display:block}
+@keyframes reveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.inner{padding:2.5rem 2.5rem;max-width:1300px;margin:0 auto}
 
-/* PANEL SYSTEM */
-.panel { display: none; }
-.panel.active { display: block; animation: fadeIn 0.3s ease; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+/* ─── EDITORIAL SECTION HEADERS ────────────────────────── */
+.ed-header{
+  display:flex;align-items:baseline;gap:16px;
+  margin-bottom:2rem;padding-bottom:10px;
+  border-bottom:2px solid var(--ink);
+}
+.ed-issue{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink4)}
+.ed-title{font-family:var(--serif);font-size:2rem;font-weight:700}
+.ed-title span{color:var(--red)}
+.ed-tag{
+  margin-left:auto;font-family:var(--mono);font-size:9px;letter-spacing:0.12em;
+  text-transform:uppercase;padding:3px 10px;border:1.5px solid currentColor;border-radius:20px;
+}
+.tag-underfunded{color:var(--red)}
+.tag-tech{color:var(--teal)}
+.tag-market{color:var(--blue)}
+.tag-policy{color:var(--violet)}
 
-/* PAGE TITLES */
-.page-header { margin-bottom: 2rem; }
-.page-eyebrow {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* ─── TOGGLE STRIP ──────────────────────────────────────── */
+.toggle-strip{
+  display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap;
+  padding:12px;background:var(--cream2);border-radius:var(--r);
+  border:1px solid var(--border);
 }
-.page-eyebrow::before {
-  content: '';
-  display: block;
-  width: 24px;
-  height: 1px;
-  background: var(--accent);
+.toggle-chip{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  padding:6px 14px;border-radius:20px;border:1.5px solid var(--border2);
+  background:var(--cream);color:var(--ink3);cursor:pointer;transition:all 0.18s;
+  user-select:none;
 }
-.page-title {
-  font-family: var(--serif);
-  font-size: 2.2rem;
-  color: var(--text);
-  line-height: 1.15;
-  margin-bottom: 6px;
-}
-.page-title em { color: var(--accent); font-style: italic; }
-.page-sub {
-  font-size: 13px;
-  color: var(--text3);
-  font-family: var(--mono);
-}
+.toggle-chip:hover{border-color:var(--ink2);color:var(--ink2)}
+.toggle-chip.on{color:var(--cream);border-color:transparent}
+.toggle-chip.on.c-red{background:var(--red)}
+.toggle-chip.on.c-teal{background:var(--teal)}
+.toggle-chip.on.c-blue{background:var(--blue)}
+.toggle-chip.on.c-gold{background:var(--gold)}
+.toggle-chip.on.c-violet{background:var(--violet)}
+.toggle-chip.on.c-ink{background:var(--ink)}
 
-/* CARDS */
-.card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  position: relative;
-  overflow: hidden;
-}
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(79,140,255,0.3), transparent);
-}
-.card-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text3);
-  margin-bottom: 10px;
-}
-.card-value {
-  font-family: var(--serif);
-  font-size: 2rem;
-  color: var(--text);
-  line-height: 1;
-}
-.card-delta {
-  font-family: var(--mono);
-  font-size: 11px;
-  margin-top: 4px;
-}
-.delta-up { color: var(--accent2); }
-.delta-down { color: var(--accent3); }
+/* ─── CARD GRID ─────────────────────────────────────────── */
+.card-grid{display:grid;gap:1.25rem}
+.card-grid.cols-3{grid-template-columns:repeat(3,1fr)}
+.card-grid.cols-2{grid-template-columns:repeat(2,1fr)}
+.card-grid.cols-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.card-grid.cols-3,.card-grid.cols-4{grid-template-columns:1fr 1fr}.card-grid.cols-2{grid-template-columns:1fr}}
 
-/* GRID LAYOUTS */
-.grid-5 { display: grid; grid-template-columns: repeat(5,1fr); gap: 1rem; margin-bottom: 1.5rem; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-.grid-72 { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-.grid-27 { display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-@media(max-width:900px) {
-  .grid-5 { grid-template-columns: repeat(3,1fr); }
-  .grid-2,.grid-3,.grid-72,.grid-27 { grid-template-columns: 1fr; }
+/* ─── TECH CARD ─────────────────────────────────────────── */
+.tech-card{
+  background:var(--cream);border:1.5px solid var(--border);border-radius:var(--r);
+  padding:1.25rem;transition:all 0.2s;cursor:pointer;position:relative;overflow:hidden;
 }
+.tech-card::after{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--r) var(--r) 0 0}
+.tech-card.c-red::after{background:var(--red)}
+.tech-card.c-teal::after{background:var(--teal)}
+.tech-card.c-blue::after{background:var(--blue)}
+.tech-card.c-gold::after{background:var(--gold)}
+.tech-card.c-violet::after{background:var(--violet)}
+.tech-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,18,8,0.1)}
+.tech-card.expanded{border-color:var(--ink2);box-shadow:0 8px 32px rgba(26,18,8,0.15)}
+.tech-card.hidden{display:none}
+.tc-sector{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;margin-top:4px}
+.tc-name{font-family:var(--serif);font-size:1.2rem;font-weight:700;line-height:1.2;margin-bottom:8px}
+.tc-deck{font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:12px}
+.tc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.tc-tag{font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:10px;border:1px solid currentColor;letter-spacing:0.08em}
+.tc-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tc-meta-item{font-family:var(--mono);font-size:10px;color:var(--ink4)}
+.tc-meta-item strong{color:var(--ink2);font-weight:700;display:block;font-size:12px}
 
-/* SECTION TITLE */
-.section-title {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text3);
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.section-title::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
+/* EXPANDED CONTENT */
+.tc-expand{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.tech-card.expanded .tc-expand{display:block;animation:reveal 0.25s ease}
+.tc-expand h4{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;margin-top:14px}
+.tc-expand h4:first-child{margin-top:0}
+.tc-expand p{font-size:12px;color:var(--ink2);line-height:1.7}
+.tc-impact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.tc-impact-block{background:var(--cream2);border-radius:6px;padding:10px;text-align:center}
+.tc-impact-val{font-family:var(--serif);font-size:1.3rem;font-weight:700}
+.tc-impact-label{font-family:var(--mono);font-size:9px;color:var(--ink4);letter-spacing:0.08em;text-transform:uppercase;margin-top:3px}
+.progress-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.progress-label{font-family:var(--mono);font-size:9px;color:var(--ink4);width:100px;text-transform:uppercase;letter-spacing:0.08em;flex-shrink:0}
+.progress-track{flex:1;height:6px;background:var(--cream3);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width 0.6s ease}
+.progress-val{font-family:var(--mono);font-size:10px;color:var(--ink3);width:30px;text-align:right}
 
-/* CHART CONTAINERS */
-.chart-wrap { position: relative; width: 100%; }
+/* ─── POLICY CARDS (UNDERFUNDED) ────────────────────────── */
+.policy-feature{
+  border:2px solid var(--ink);border-radius:var(--r);
+  overflow:hidden;margin-bottom:1.25rem;
+  transition:box-shadow 0.2s;
+}
+.policy-feature:hover{box-shadow:6px 6px 0 var(--ink)}
+.policy-feature-head{
+  display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;
+  padding:1.25rem 1.5rem;cursor:pointer;
+  background:var(--cream);transition:background 0.15s;
+}
+.policy-feature-head:hover{background:var(--cream2)}
+.pf-number{
+  font-family:var(--serif);font-size:3rem;font-weight:900;color:var(--cream3);
+  line-height:1;width:48px;text-align:center;
+}
+.pf-main{}
+.pf-area{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--red);margin-bottom:3px}
+.pf-title{font-family:var(--serif);font-size:1.3rem;font-weight:700}
+.pf-right{text-align:right}
+.pf-gap-label{font-family:var(--mono);font-size:9px;color:var(--ink4);letter-spacing:0.1em;text-transform:uppercase}
+.pf-gap-val{font-family:var(--serif);font-size:1.4rem;font-weight:700;color:var(--red)}
+.policy-feature-body{
+  display:none;
+  border-top:2px solid var(--ink);
+  padding:1.5rem;
+  background:var(--cream2);
+}
+.policy-feature.open .policy-feature-body{display:block;animation:reveal 0.25s ease}
+.pf-body-grid{display:grid;grid-template-columns:2fr 1fr;gap:1.5rem}
+.pf-desc{font-size:13px;color:var(--ink2);line-height:1.8;margin-bottom:12px}
+.pf-what-helps{margin-top:1rem}
+.pf-what-helps h4{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
+.solution-item{
+  display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;
+}
+.solution-icon{
+  width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:12px;flex-shrink:0;margin-top:2px;
+}
+.solution-text{font-size:12px;color:var(--ink2);line-height:1.6}
+.solution-text strong{color:var(--ink);font-weight:600}
+.pf-stats-col{}
+.pf-stat-big{
+  background:var(--cream);border:1.5px solid var(--border);border-radius:var(--r);
+  padding:12px 14px;margin-bottom:8px;
+}
+.pf-stat-big .num{font-family:var(--serif);font-size:1.6rem;font-weight:700;line-height:1}
+.pf-stat-big .label{font-family:var(--mono);font-size:9px;color:var(--ink4);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px}
 
-/* TECH TABLE */
-.tech-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.tech-table th {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--text3);
-  padding: 8px 12px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg3);
-  position: sticky;
-  top: 60px;
+/* ─── MARKET DYNAMICS ───────────────────────────────────── */
+.market-lens{
+  display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;
+  margin-bottom:1.25rem;
 }
-.tech-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text2);
-  vertical-align: middle;
-  cursor: pointer;
-  transition: background 0.15s;
+.market-article{
+  border:1.5px solid var(--border);border-radius:var(--r);padding:1.25rem;
+  transition:all 0.2s;cursor:pointer;
 }
-.tech-table tr:hover td { background: rgba(79,140,255,0.05); color: var(--text); }
-.tech-table tr.selected td { background: rgba(79,140,255,0.1); }
-.tech-name-cell { color: var(--text) !important; font-weight: 500; font-family: var(--sans); }
+.market-article:hover{border-color:var(--border2);box-shadow:4px 4px 0 var(--border2)}
+.market-article.active{border-color:var(--ink);border-width:2px}
+.ma-label{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px}
+.ma-title{font-family:var(--serif);font-size:1.1rem;font-weight:700;margin-bottom:8px;line-height:1.3}
+.ma-preview{font-size:12px;color:var(--ink3);line-height:1.6}
+.market-detail{
+  border:2px solid var(--ink);border-radius:var(--r);padding:2rem;
+  display:none;
+}
+.market-detail.active{display:block;animation:reveal 0.25s ease}
+.md-title{font-family:var(--serif);font-size:1.6rem;font-weight:700;margin-bottom:1rem}
+.md-body{font-size:14px;color:var(--ink2);line-height:1.8;margin-bottom:1.5rem}
+.md-mechanisms{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:1.5rem}
+.mechanism-block{
+  background:var(--cream2);border-radius:var(--r);padding:1rem;
+  border-left:4px solid var(--ink);
+}
+.mb-label{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px}
+.mb-content{font-size:12px;color:var(--ink2);line-height:1.6}
 
-.trl-bar {
-  height: 4px;
-  border-radius: 2px;
-  background: var(--bg4);
-  width: 72px;
-  display: inline-block;
-  vertical-align: middle;
-  overflow: hidden;
+/* ─── INNOVATION PIPELINE ───────────────────────────────── */
+.pipeline-stage{
+  margin-bottom:1rem;
+  display:grid;grid-template-columns:140px 1fr;gap:1rem;align-items:start;
 }
-.trl-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
+.ps-label-col{padding-top:12px}
+.ps-stage-name{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink4)}
+.ps-trl{font-family:var(--serif);font-size:0.85rem;color:var(--ink3)}
+.ps-cards{display:flex;gap:8px;flex-wrap:wrap}
+.ps-item{
+  border:1.5px solid var(--border);border-radius:6px;padding:8px 12px;
+  font-size:11px;background:var(--cream);cursor:pointer;transition:all 0.18s;
+  line-height:1.4;flex-shrink:0;
+}
+.ps-item:hover{border-color:var(--ink2);background:var(--cream2)}
+.ps-item strong{display:block;font-weight:600;font-size:11px;margin-bottom:2px}
+.ps-item span{color:var(--ink4);font-size:10px;font-family:var(--mono)}
+.ps-item.highlighted{border-color:var(--teal);background:rgba(13,122,107,0.05)}
 
-.badge {
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  padding: 2px 7px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  font-weight: 500;
+/* ─── PULL QUOTE ────────────────────────────────────────── */
+.pull-quote{
+  border-left:4px solid var(--red);padding:1.25rem 1.5rem;margin:2rem 0;
+  background:var(--cream2);border-radius:0 var(--r) var(--r) 0;
 }
-.badge-blue { background: rgba(79,140,255,0.15); color: var(--accent); border: 1px solid rgba(79,140,255,0.25); }
-.badge-green { background: rgba(0,212,170,0.12); color: var(--accent2); border: 1px solid rgba(0,212,170,0.22); }
-.badge-amber { background: rgba(245,166,35,0.12); color: var(--accent4); border: 1px solid rgba(245,166,35,0.22); }
-.badge-red { background: rgba(255,107,107,0.12); color: var(--accent3); border: 1px solid rgba(255,107,107,0.22); }
-.badge-purple { background: rgba(176,106,255,0.12); color: var(--accent5); border: 1px solid rgba(176,106,255,0.22); }
+.pull-quote p{font-family:var(--serif);font-size:1.2rem;font-style:italic;line-height:1.6;color:var(--ink)}
+.pull-quote cite{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink4);margin-top:8px;display:block}
 
-/* FILTER BAR */
-.filter-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
+/* ─── COMPARE TOGGLE ────────────────────────────────────── */
+.lens-switcher{
+  display:flex;gap:0;margin-bottom:1.5rem;
+  border:2px solid var(--ink);border-radius:var(--r);overflow:hidden;width:fit-content;
 }
-.filter-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text3);
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 5px 12px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.15s;
+.lens-btn{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  padding:9px 20px;border:none;background:transparent;color:var(--ink3);cursor:pointer;
+  transition:all 0.15s;border-right:1px solid var(--border2);
 }
-.filter-btn:hover { border-color: var(--border2); color: var(--text2); }
-.filter-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(79,140,255,0.1); }
+.lens-btn:last-child{border-right:none}
+.lens-btn:hover{background:var(--cream2);color:var(--ink)}
+.lens-btn.active{background:var(--ink);color:var(--cream)}
 
-/* SEARCH */
-.search-input {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 12px;
-  padding: 6px 12px;
-  width: 200px;
-  outline: none;
-  transition: border-color 0.15s;
+/* ─── RADAR / VISUAL ────────────────────────────────────── */
+.radar-wrap{
+  display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;
 }
-.search-input:focus { border-color: var(--border2); }
-.search-input::placeholder { color: var(--text3); }
+.radar-canvas-wrap{position:relative}
 
-/* TECH DETAIL DRAWER */
-.detail-drawer {
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  margin-top: 1rem;
-  display: none;
-  animation: slideDown 0.2s ease;
+/* ─── SCROLLING TICKER ──────────────────────────────────── */
+.ticker-wrap{
+  overflow:hidden;background:var(--ink);color:var(--cream);
+  padding:8px 0;border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);
+  margin-bottom:0;
 }
-.detail-drawer.open { display: block; }
-@keyframes slideDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+.ticker-inner{
+  display:flex;gap:0;white-space:nowrap;
+  animation:ticker 60s linear infinite;
+}
+.ticker-inner:hover{animation-play-state:paused}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;
+  padding:0 2rem;color:var(--cream);text-transform:uppercase;
+}
+.ticker-item .dot{color:var(--gold2);margin-right:8px}
 
-/* SCENARIO BUILDER */
-.scenario-section { margin-bottom: 2rem; }
+/* ─── UTILITY ───────────────────────────────────────────── */
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.divider{border:none;border-top:1px solid var(--border);margin:2rem 0}
+.label-tag{
+  display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 8px;
+  border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;
+}
+.lt-red{background:rgba(192,57,43,0.1);color:var(--red);border:1px solid rgba(192,57,43,0.3)}
+.lt-teal{background:rgba(13,122,107,0.1);color:var(--teal);border:1px solid rgba(13,122,107,0.3)}
+.lt-blue{background:rgba(26,79,138,0.1);color:var(--blue);border:1px solid rgba(26,79,138,0.3)}
+.lt-gold{background:rgba(184,134,11,0.1);color:var(--gold);border:1px solid rgba(184,134,11,0.3)}
+.lt-violet{background:rgba(91,45,142,0.1);color:var(--violet);border:1px solid rgba(91,45,142,0.3)}
+.mt1{margin-top:1rem}.mt2{margin-top:2rem}.mb1{margin-bottom:1rem}
 
-.slider-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
+/* ─── FOOTNOTE STRIP ────────────────────────────────────── */
+footer{
+  border-top:3px solid var(--ink);margin-top:4rem;padding:1.5rem 2.5rem;
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--cream2);
 }
-.slider-label-group { width: 200px; flex-shrink: 0; }
-.slider-name { font-size: 12px; color: var(--text2); }
-.slider-meta { font-family: var(--mono); font-size: 10px; color: var(--text3); }
-input[type=range] {
-  flex: 1;
-  appearance: none;
-  height: 3px;
-  background: var(--bg4);
-  border-radius: 2px;
-  outline: none;
-  cursor: pointer;
-}
-input[type=range]::-webkit-slider-thumb {
-  appearance: none;
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: 2px solid var(--bg);
-  box-shadow: 0 0 8px rgba(79,140,255,0.4);
-  cursor: pointer;
-}
-input[type=range]::-moz-range-thumb {
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: 2px solid var(--bg);
-  cursor: pointer;
-}
-.slider-value {
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--accent);
-  width: 60px;
-  text-align: right;
-}
+footer .f-left{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink4)}
+footer .f-right{font-family:var(--serif);font-size:1rem;font-style:italic;color:var(--ink3)}
 
-/* SCENARIO RESULTS */
-.scenario-results {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  margin-top: 1.5rem;
-}
-.result-grid {
-  display: grid;
-  grid-template-columns: repeat(4,1fr);
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-.result-item { text-align: center; }
-.result-value {
-  font-family: var(--serif);
-  font-size: 1.8rem;
-  color: var(--text);
-  display: block;
-}
-.result-label { font-family: var(--mono); font-size: 10px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; }
-.result-sub { font-family: var(--mono); font-size: 11px; margin-top: 2px; }
-
-.horizon-tabs {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 1rem;
-}
-.horizon-tab {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text3);
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 5px 14px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.horizon-tab.active { border-color: var(--accent2); color: var(--accent2); background: rgba(0,212,170,0.08); }
-
-/* COMPARISON */
-.compare-grid {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-.compare-card {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.25rem;
-  cursor: pointer;
-  transition: all 0.15s;
-  position: relative;
-}
-.compare-card:hover { border-color: var(--border2); }
-.compare-card.selected { border-color: var(--accent); background: rgba(79,140,255,0.07); }
-.compare-card.selected::after {
-  content: '✓';
-  position: absolute;
-  top: 10px; right: 12px;
-  font-size: 12px;
-  color: var(--accent);
-  font-family: var(--mono);
-}
-.compare-card-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-.compare-card-sector { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
-.compare-stat { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-.compare-stat-label { font-size: 11px; color: var(--text3); }
-.compare-stat-value { font-family: var(--mono); font-size: 11px; color: var(--text2); }
-
-/* COMPARE TABLE */
-.cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.cmp-table th {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text3);
-  padding: 8px 14px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg3);
-}
-.cmp-table td {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text2);
-}
-.cmp-table tr:hover td { background: rgba(79,140,255,0.04); }
-.cmp-table td:first-child { color: var(--text3); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
-.best { color: var(--accent2) !important; font-weight: 600; }
-.worst { color: var(--accent3) !important; }
-
-/* POLICY PANEL */
-.policy-card {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.25rem;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.policy-card:hover { border-color: var(--border2); }
-.policy-card.expanded { border-color: var(--border2); }
-.policy-header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-.policy-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
-.policy-body { font-size: 12px; color: var(--text3); margin-top: 10px; display: none; line-height: 1.7; }
-.policy-card.expanded .policy-body { display: block; }
-.policy-impact-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-.policy-impact-chip {
-  font-family: var(--mono);
-  font-size: 10px;
-  padding: 3px 8px;
-  border-radius: 4px;
-  background: rgba(79,140,255,0.08);
-  color: var(--accent);
-  border: 1px solid rgba(79,140,255,0.18);
-}
-.impact-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; margin-top: 8px; }
-.impact-bar-label { font-family: var(--mono); font-size: 9px; color: var(--text3); width: 100px; text-transform: uppercase; letter-spacing: 0.08em; }
-.impact-bar-track { flex: 1; background: var(--bg4); border-radius: 2px; height: 6px; overflow: hidden; }
-.impact-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
-.impact-bar-val { font-family: var(--mono); font-size: 10px; color: var(--text2); width: 32px; text-align: right; }
-
-/* TOOLTIP */
-.tooltip {
-  position: absolute;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text2);
-  pointer-events: none;
-  z-index: 200;
-  white-space: nowrap;
-  display: none;
-}
-
-/* TIMELINE */
-.timeline { position: relative; padding-left: 24px; }
-.timeline::before { content:''; position:absolute; left:6px; top:0; bottom:0; width:1.5px; background: linear-gradient(180deg, var(--accent) 0%, transparent 100%); }
-.tl-item { position: relative; margin-bottom: 1.25rem; }
-.tl-dot { position:absolute; left:-22px; top:4px; width:9px; height:9px; border-radius:50%; background:var(--bg); border:2px solid var(--accent); }
-.tl-dot.green { border-color: var(--accent2); }
-.tl-dot.amber { border-color: var(--accent4); }
-.tl-dot.purple { border-color: var(--accent5); }
-.tl-year { font-family:var(--mono); font-size:9px; color:var(--text3); letter-spacing:0.12em; margin-bottom:2px; }
-.tl-event { font-size:12px; font-weight:600; color:var(--text); }
-.tl-desc { font-size:11px; color:var(--text3); margin-top:2px; line-height:1.5; }
-
-/* MINI SPARKLINE */
-.spark { display: inline-block; vertical-align: middle; }
-
-/* SELECT */
-select {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text2);
-  font-family: var(--mono);
-  font-size: 11px;
-  padding: 5px 10px;
-  cursor: pointer;
-  outline: none;
-}
-
-/* SCROLLBAR */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
-
-/* COST TABLE */
-.cost-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.cost-table th {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--text3);
-  padding: 8px 12px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg3);
-}
-.cost-table td {
-  padding: 9px 12px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text2);
-  font-family: var(--mono);
-  font-size: 11px;
-}
-.cost-table td:first-child { color: var(--text); font-family: var(--sans); font-size: 12px; }
-.cost-table tr:hover td { background: rgba(79,140,255,0.04); }
-
-/* BUTTON */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(79,140,255,0.12);
-  border: 1px solid rgba(79,140,255,0.3);
-  color: var(--accent);
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 7px 16px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.btn:hover { background: rgba(79,140,255,0.2); }
-.btn-green {
-  background: rgba(0,212,170,0.1);
-  border-color: rgba(0,212,170,0.3);
-  color: var(--accent2);
-}
-.btn-green:hover { background: rgba(0,212,170,0.18); }
-
-.mb1 { margin-bottom: 1rem; }
-.mb15 { margin-bottom: 1.5rem; }
-.mt1 { margin-top: 1rem; }
-.flex { display: flex; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.gap8 { gap: 8px; }
+/* ─── CHART OVERRIDE ────────────────────────────────────── */
+canvas{display:block}
 </style>
 </head>
 <body>
+<h1 class="sr-only">MedTech Pulse — U.S. Healthcare Technology Interactive Explorer</h1>
 
-<header>
-  <div class="header-brand">
-    <div class="header-seal">HHS</div>
-    <div>
-      <div class="header-title"><strong>US HealthTech</strong> Federal Investment Platform</div>
-    </div>
+<!-- TICKER -->
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker-inner">
+    <span class="ticker-item"><span class="dot">◆</span>CRISPR gene therapy: first sickle cell cure approved FDA 2023</span>
+    <span class="ticker-item"><span class="dot">◆</span>Mental health tech: $500M gap in rural access</span>
+    <span class="ticker-item"><span class="dot">◆</span>AI-assisted radiology: 94% sensitivity in lung cancer detection</span>
+    <span class="ticker-item"><span class="dot">◆</span>Maternal mortality crisis: U.S. worst among high-income nations</span>
+    <span class="ticker-item"><span class="dot">◆</span>Wearable biosensors: 40M Americans now using continuous monitoring</span>
+    <span class="ticker-item"><span class="dot">◆</span>Rare disease: 7,000 conditions, 95% still have no approved treatment</span>
+    <span class="ticker-item"><span class="dot">◆</span>Digital therapeutics: FDA cleared 38 prescription apps in FY24</span>
+    <span class="ticker-item"><span class="dot">◆</span>Nursing shortage: 1.2M openings projected by 2030</span>
+    <span class="ticker-item"><span class="dot">◆</span>CRISPR gene therapy: first sickle cell cure approved FDA 2023</span>
+    <span class="ticker-item"><span class="dot">◆</span>Mental health tech: $500M gap in rural access</span>
+    <span class="ticker-item"><span class="dot">◆</span>AI-assisted radiology: 94% sensitivity in lung cancer detection</span>
+    <span class="ticker-item"><span class="dot">◆</span>Maternal mortality crisis: U.S. worst among high-income nations</span>
+    <span class="ticker-item"><span class="dot">◆</span>Wearable biosensors: 40M Americans now using continuous monitoring</span>
+    <span class="ticker-item"><span class="dot">◆</span>Rare disease: 7,000 conditions, 95% still have no approved treatment</span>
+    <span class="ticker-item"><span class="dot">◆</span>Digital therapeutics: FDA cleared 38 prescription apps in FY24</span>
+    <span class="ticker-item"><span class="dot">◆</span>Nursing shortage: 1.2M openings projected by 2030</span>
   </div>
-  <nav class="header-nav">
-    <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
-    <button class="nav-btn" onclick="showPanel('technologies',this)">Technologies</button>
-    <button class="nav-btn" onclick="showPanel('compare',this)">Compare</button>
-    <button class="nav-btn" onclick="showPanel('scenarios',this)">Cost Scenarios</button>
-    <button class="nav-btn" onclick="showPanel('policy',this)">Policy</button>
+</div>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-left">NIH · FDA · ARPA-H · CMS&nbsp;&nbsp;|&nbsp;&nbsp;FY 2024–2025</div>
+  <div class="masthead-center">
+    <div class="masthead-title">MedTech <span>Pulse</span></div>
+    <div class="masthead-sub">U.S. Healthcare Technology Explorer</div>
+  </div>
+  <nav class="masthead-right">
+    <button class="section-pill active" onclick="goPage('technologies',this)">Technologies</button>
+    <button class="section-pill" onclick="goPage('underfunded',this)">Underfunded</button>
+    <button class="section-pill" onclick="goPage('market',this)">Market</button>
+    <button class="section-pill" onclick="goPage('pipeline',this)">Pipeline</button>
   </nav>
-  <div class="header-status">
-    <div class="status-dot"></div>
-    FY2024 · LIVE DATA MODEL
-  </div>
 </header>
 
-<main>
-
-<!-- ═══════════════════════════════════════════════ OVERVIEW -->
-<div id="panel-overview" class="panel active">
-  <div class="page-header">
-    <div class="page-eyebrow">Federal Analytics Dashboard</div>
-    <h1 class="page-title">U.S. Health Technology <em>Investment Intelligence</em></h1>
-    <p class="page-sub">FY2015–2024 · NIH · ARPA-H · CMS · BARDA · DoD · FDA</p>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-kicker">Interactive Technology Intelligence</div>
+    <h2 class="hero-headline">How technology is <em>rewriting</em> American healthcare</h2>
+    <p class="hero-deck">Explore the technologies transforming medicine, the communities being left behind, and what meaningful policy can do — built for the curious intern, the engaged researcher, and the next generation of healthcare innovators.</p>
   </div>
-
-  <div class="grid-5">
-    <div class="card">
-      <div class="card-label">Total Fed Investment</div>
-      <div class="card-value">$284B</div>
-      <div class="card-delta delta-up">▲ 12.4% YoY</div>
+  <div class="hero-right">
+    <div class="stat-block">
+      <div class="stat-num">7,000</div>
+      <div class="stat-unit">RARE DISEASES</div>
+      <div class="stat-label">95% without any approved treatment</div>
     </div>
-    <div class="card">
-      <div class="card-label">Active Programs</div>
-      <div class="card-value">1,847</div>
-      <div class="card-delta delta-up">▲ 203 since FY23</div>
+    <div class="stat-block">
+      <div class="stat-num">1 in 5</div>
+      <div class="stat-unit">AMERICANS</div>
+      <div class="stat-label">Live in a mental health care desert</div>
     </div>
-    <div class="card">
-      <div class="card-label">FDA Approvals FY24</div>
-      <div class="card-value">218</div>
-      <div class="card-delta delta-up">Record high</div>
+    <div class="stat-block">
+      <div class="stat-num">40%</div>
+      <div class="stat-unit">OF DEATHS</div>
+      <div class="stat-label">Preventable with existing technology</div>
     </div>
-    <div class="card">
-      <div class="card-label">Patents Filed</div>
-      <div class="card-value">62,100</div>
-      <div class="card-delta delta-up">▲ 8.1% YoY</div>
-    </div>
-    <div class="card">
-      <div class="card-label">ARPA-H Budget FY24</div>
-      <div class="card-value">$2.5B</div>
-      <div class="card-delta delta-up">New high-risk R&D</div>
+    <div class="stat-block">
+      <div class="stat-num">$0</div>
+      <div class="stat-unit">FDA APPROVALS</div>
+      <div class="stat-label">For neglected tropical diseases in U.S. pipeline</div>
     </div>
   </div>
+</section>
 
-  <div class="grid-72">
-    <div class="card">
-      <div class="section-title">10-Year Federal Investment Trend ($B)</div>
-      <div class="chart-wrap" style="height:220px"><canvas id="trendChart" role="img" aria-label="Federal health tech investment trend 2015 to 2024 showing growth from 156B to 284B"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="section-title">Sector Allocation FY24</div>
-      <div class="chart-wrap" style="height:220px"><canvas id="sectorChart" role="img" aria-label="Health tech sector allocation pie chart"></canvas></div>
+<!-- ═══════════ PAGE: TECHNOLOGIES ═══════════ -->
+<div id="page-technologies" class="page active">
+<div class="inner">
+  <div class="ed-header">
+    <span class="ed-issue">Section I</span>
+    <h2 class="ed-title">The Technology <span>Landscape</span></h2>
+    <span class="ed-tag tag-tech">What it does for health</span>
+  </div>
+
+  <p style="font-size:14px;color:var(--ink2);margin-bottom:1.5rem;max-width:700px;line-height:1.8">
+    Toggle sectors to explore how each technology <strong>works</strong>, what health problems it solves, where it is in development, and which communities it serves — or fails to serve.
+  </p>
+
+  <div class="toggle-strip" role="group" aria-label="Filter technologies by sector">
+    <span style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink4);padding:6px 4px">Filter:</span>
+    <button class="toggle-chip on c-ink" onclick="toggleSector('all',this)">All</button>
+    <button class="toggle-chip" onclick="toggleSector('AI',this)" data-sector="AI">AI & Machine Learning</button>
+    <button class="toggle-chip" onclick="toggleSector('Genomics',this)" data-sector="Genomics">Genomics</button>
+    <button class="toggle-chip" onclick="toggleSector('Digital',this)" data-sector="Digital">Digital Health</button>
+    <button class="toggle-chip" onclick="toggleSector('Devices',this)" data-sector="Devices">Medical Devices</button>
+    <button class="toggle-chip" onclick="toggleSector('Biotech',this)" data-sector="Biotech">Biotech</button>
+    <button class="toggle-chip" onclick="toggleSector('Neuro',this)" data-sector="Neuro">Neurotech</button>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+      <span style="font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink4)">Show only:</span>
+      <button class="toggle-chip" id="toggleUnderserved" onclick="toggleFilter('underserved')">Underserved</button>
+      <button class="toggle-chip" id="toggleEarly" onclick="toggleFilter('early')">Early Stage</button>
     </div>
   </div>
 
-  <div class="grid-3">
-    <div class="card">
-      <div class="section-title">Agency Breakdown ($B)</div>
-      <div class="chart-wrap" style="height:180px"><canvas id="agencyChart" role="img" aria-label="Investment by federal agency bar chart"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="section-title">TRL Distribution</div>
-      <div class="chart-wrap" style="height:180px"><canvas id="trlChart" role="img" aria-label="Technology readiness level distribution"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="section-title">Key Legislative Milestones</div>
-      <div class="timeline" style="margin-top:4px">
-        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2016</div><div class="tl-event">21st Century Cures Act</div><div class="tl-desc">$6.3B for precision medicine & cancer moonshot</div></div>
-        <div class="tl-item"><div class="tl-dot amber"></div><div class="tl-year">2020</div><div class="tl-event">Operation Warp Speed</div><div class="tl-desc">mRNA platform federally validated; $18B deployed</div></div>
-        <div class="tl-item"><div class="tl-dot purple"></div><div class="tl-year">2022</div><div class="tl-event">ARPA-H Established</div><div class="tl-desc">High-risk biomedical R&D agency launched</div></div>
-        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2023</div><div class="tl-event">AI in Healthcare EO</div><div class="tl-desc">FDA AI/ML adaptive framework for SaMD</div></div>
-        <div class="tl-item"><div class="tl-dot green"></div><div class="tl-year">2024</div><div class="tl-event">TEFCA Full Deployment</div><div class="tl-desc">FHIR mandated; 400M records interoperable</div></div>
-      </div>
-    </div>
+  <div class="card-grid cols-3" id="techCardGrid"></div>
+
+  <div class="pull-quote mt2">
+    <p>"The most powerful technologies aren't always the most funded. The gap between what's scientifically possible and what gets built is a policy problem as much as an engineering problem."</p>
+    <cite>— Framing principle, NIH Strategic Plan 2021–2025</cite>
   </div>
 </div>
-
-<!-- ═══════════════════════════════════════════════ TECHNOLOGIES -->
-<div id="panel-technologies" class="panel">
-  <div class="page-header">
-    <div class="page-eyebrow">Technology Catalog</div>
-    <h1 class="page-title">U.S. Health <em>Technology Landscape</em></h1>
-    <p class="page-sub">Click any row to expand full investment profile. Filter by sector or readiness level.</p>
-  </div>
-
-  <div class="card mb15">
-    <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterTech('all',this)">All Sectors</button>
-      <button class="filter-btn" onclick="filterTech('AI/ML',this)">AI / ML</button>
-      <button class="filter-btn" onclick="filterTech('Genomics',this)">Genomics</button>
-      <button class="filter-btn" onclick="filterTech('Medtech',this)">Medtech</button>
-      <button class="filter-btn" onclick="filterTech('Digital',this)">Digital Health</button>
-      <button class="filter-btn" onclick="filterTech('Biotech',this)">Biotech</button>
-      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-        <input class="search-input" id="techSearch" type="text" placeholder="Search..." oninput="searchTech()">
-        <select id="trlFilter" onchange="filterTech(currentFilter)">
-          <option value="all-trl">All TRL levels</option>
-          <option value="high">TRL 7–9 (Deploy ready)</option>
-          <option value="mid">TRL 4–6 (Advanced dev)</option>
-          <option value="low">TRL 1–3 (Early stage)</option>
-        </select>
-      </div>
-    </div>
-    <div style="overflow-x:auto">
-      <table class="tech-table" id="techTable">
-        <thead>
-          <tr>
-            <th>Technology</th>
-            <th>Sector</th>
-            <th>Lead Agency</th>
-            <th>FY24 Investment</th>
-            <th>5-yr Growth</th>
-            <th>TRL Level</th>
-            <th>Readiness</th>
-            <th>Equity Impact</th>
-            <th>Time to Scale</th>
-          </tr>
-        </thead>
-        <tbody id="techTableBody"></tbody>
-      </table>
-    </div>
-    <div class="detail-drawer" id="techDetail"></div>
-  </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ COMPARE -->
-<div id="panel-compare" class="panel">
-  <div class="page-header">
-    <div class="page-eyebrow">Technology Comparison</div>
-    <h1 class="page-title">Side-by-Side <em>Investment Analysis</em></h1>
-    <p class="page-sub">Select up to 5 technologies to compare across all federal investment dimensions.</p>
+<!-- ═══════════ PAGE: UNDERFUNDED ═══════════ -->
+<div id="page-underfunded" class="page">
+<div class="inner">
+  <div class="ed-header">
+    <span class="ed-issue">Section II</span>
+    <h2 class="ed-title">Underfunded <span>Frontiers</span></h2>
+    <span class="ed-tag tag-underfunded">Policy gaps</span>
   </div>
 
-  <div class="section-title mb1">Select Technologies to Compare</div>
-  <div class="compare-grid" id="compareSelectGrid"></div>
+  <p style="font-size:14px;color:var(--ink2);margin-bottom:1.5rem;max-width:700px;line-height:1.8">
+    Click each area to explore the gap, understand why it exists, and see what emerging technologies and policies could close it. These are the places where a well-aimed investment changes the most lives.
+  </p>
 
-  <div id="compareResults" style="display:none">
-    <div class="grid-2">
-      <div class="card">
-        <div class="section-title">Radar: Multi-Dimensional Score</div>
-        <div class="chart-wrap" style="height:280px"><canvas id="radarChart" role="img" aria-label="Radar chart comparing selected health technologies"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="section-title">Investment vs. Growth Rate</div>
-        <div class="chart-wrap" style="height:280px"><canvas id="bubbleChart" role="img" aria-label="Bubble chart investment versus growth rate"></canvas></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="section-title">Detailed Comparison Matrix</div>
-      <div style="overflow-x:auto">
-        <table class="cmp-table" id="compareMatrix"></table>
-      </div>
-    </div>
-  </div>
-  <div id="comparePrompt" class="card" style="text-align:center;padding:3rem;color:var(--text3);font-family:var(--mono);font-size:12px;letter-spacing:0.08em">
-    SELECT 2 OR MORE TECHNOLOGIES ABOVE TO BEGIN COMPARISON
-  </div>
+  <div id="underfundedList"></div>
+</div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ SCENARIOS -->
-<div id="panel-scenarios" class="panel">
-  <div class="page-header">
-    <div class="page-eyebrow">Cost Scenario Modeling</div>
-    <h1 class="page-title">Federal Investment <em>Scenario Planner</em></h1>
-    <p class="page-sub">Model future investment strategies and project outcomes across innovation, equity, and cost dimensions through 2035.</p>
+<!-- ═══════════ PAGE: MARKET ═══════════ -->
+<div id="page-market" class="page">
+<div class="inner">
+  <div class="ed-header">
+    <span class="ed-issue">Section III</span>
+    <h2 class="ed-title">How the <span>Market</span> Works</h2>
+    <span class="ed-tag tag-market">Dynamics</span>
   </div>
 
-  <div class="grid-27">
+  <p style="font-size:14px;color:var(--ink2);margin-bottom:1.5rem;max-width:700px;line-height:1.8">
+    The U.S. MedTech market is not a free market — it's shaped by FDA pathways, reimbursement codes, IP cliffs, and public-private handoffs. Select a lens to understand each mechanism.
+  </p>
+
+  <div class="lens-switcher" role="tablist">
+    <button class="lens-btn active" onclick="switchLens('approval',this)" role="tab">FDA Pathways</button>
+    <button class="lens-btn" onclick="switchLens('reimbursement',this)" role="tab">Reimbursement</button>
+    <button class="lens-btn" onclick="switchLens('valleyofdeath',this)" role="tab">Valley of Death</button>
+    <button class="lens-btn" onclick="switchLens('platform',this)" role="tab">Platform Effects</button>
+    <button class="lens-btn" onclick="switchLens('equity',this)" role="tab">Equity Gap</button>
+  </div>
+
+  <div id="marketContent"></div>
+
+  <hr class="divider">
+
+  <div class="ed-header" style="margin-top:2rem">
+    <span class="ed-issue">Snapshot</span>
+    <h2 class="ed-title" style="font-size:1.4rem">Technology <span>Readiness</span> Map</h2>
+  </div>
+  <div style="overflow-x:auto">
+    <canvas id="trlMapChart" height="220" role="img" aria-label="Technology readiness level map showing where major health technologies sit in the development pipeline"></canvas>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ PAGE: PIPELINE ═══════════ -->
+<div id="page-pipeline" class="page">
+<div class="inner">
+  <div class="ed-header">
+    <span class="ed-issue">Section IV</span>
+    <h2 class="ed-title">Innovation <span>Pipeline</span></h2>
+    <span class="ed-tag tag-policy">From lab to life</span>
+  </div>
+
+  <p style="font-size:14px;color:var(--ink2);margin-bottom:1.5rem;max-width:700px;line-height:1.8">
+    Every breakthrough begins as a hypothesis. Trace how technologies move from basic research to clinical deployment — and where they stall. Click any technology to spotlight its journey.
+  </p>
+
+  <div class="toggle-strip">
+    <span style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink4);padding:6px 4px">Spotlight:</span>
+    <button class="toggle-chip" onclick="highlightPipeline('cancer')">Cancer</button>
+    <button class="toggle-chip" onclick="highlightPipeline('mental')">Mental Health</button>
+    <button class="toggle-chip" onclick="highlightPipeline('rare')">Rare Disease</button>
+    <button class="toggle-chip" onclick="highlightPipeline('chronic')">Chronic Disease</button>
+    <button class="toggle-chip" onclick="highlightPipeline('infectious')">Infectious Disease</button>
+    <button class="toggle-chip" onclick="highlightPipeline(null)">Show All</button>
+  </div>
+
+  <div id="pipelineStages"></div>
+
+  <hr class="divider">
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem">
     <div>
-      <div class="card mb15">
-        <div class="section-title">Investment Horizon</div>
-        <div class="horizon-tabs">
-          <button class="horizon-tab active" onclick="setHorizon(5,this)">5-Year</button>
-          <button class="horizon-tab" onclick="setHorizon(10,this)">10-Year</button>
-          <button class="horizon-tab" onclick="setHorizon(15,this)">15-Year</button>
-        </div>
-        <div class="section-title">Budget Allocation by Sector (%)</div>
-        <div id="sectorSliders"></div>
-        <div style="margin-top:10px;font-family:var(--mono);font-size:10px;color:var(--text3);display:flex;justify-content:space-between">
-          <span>Total allocated: <span id="totalAlloc" style="color:var(--accent)">100%</span></span>
-          <button class="btn" onclick="resetSliders()">Reset</button>
-        </div>
+      <div class="ed-header" style="font-size:1.2rem;margin-bottom:1rem">
+        <span class="ed-issue">Key Stat</span>
+        <h3 class="ed-title" style="font-size:1.2rem">Translation <span>Timelines</span></h3>
       </div>
-      <div class="card mb15">
-        <div class="section-title">Policy Levers</div>
-        <div class="slider-row">
-          <div class="slider-label-group"><div class="slider-name">Regulatory speed</div><div class="slider-meta">FDA review acceleration</div></div>
-          <input type="range" min="0" max="100" value="50" id="polReg" oninput="runScenario()">
-          <div class="slider-value" id="polRegV">50</div>
-        </div>
-        <div class="slider-row">
-          <div class="slider-label-group"><div class="slider-name">Equity weighting</div><div class="slider-meta">Underserved community focus</div></div>
-          <input type="range" min="0" max="100" value="40" id="polEq" oninput="runScenario()">
-          <div class="slider-value" id="polEqV">40</div>
-        </div>
-        <div class="slider-row">
-          <div class="slider-label-group"><div class="slider-name">Public-private leverage</div><div class="slider-meta">1x = no private match</div></div>
-          <input type="range" min="10" max="40" value="20" id="polPP" oninput="runScenario()">
-          <div class="slider-value" id="polPPV">2.0×</div>
-        </div>
-        <div class="slider-row">
-          <div class="slider-label-group"><div class="slider-name">Total annual budget ($B)</div><div class="slider-meta">Federal appropriations</div></div>
-          <input type="range" min="100" max="600" value="284" id="polBudget" step="5" oninput="runScenario()">
-          <div class="slider-value" id="polBudgetV">$284B</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-title">Preset Scenarios</div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <button class="btn" style="width:100%;justify-content:center" onclick="loadPreset('aiFirst')">AI-First Acceleration</button>
-          <button class="btn" style="width:100%;justify-content:center" onclick="loadPreset('equity')">Equity-Centered Biotech</button>
-          <button class="btn" style="width:100%;justify-content:center" onclick="loadPreset('balanced')">Balanced Portfolio (Recommended)</button>
-          <button class="btn" style="width:100%;justify-content:center" onclick="loadPreset('moonshot')">ARPA-H Moonshot Mode</button>
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <div class="scenario-results">
-        <div class="section-title">Projected Outcomes — <span id="horizonLabel">5-Year</span> Forecast</div>
-        <div class="result-grid">
-          <div class="result-item">
-            <span class="result-value" id="res-roi">$3.4T</span>
-            <span class="result-label">Economic ROI</span>
-            <span class="result-sub delta-up" id="res-roi-sub">▲ 12x return</span>
-          </div>
-          <div class="result-item">
-            <span class="result-value" id="res-lives">42M</span>
-            <span class="result-label">Lives Impacted</span>
-            <span class="result-sub delta-up" id="res-lives-sub">US population</span>
-          </div>
-          <div class="result-item">
-            <span class="result-value" id="res-cost">$180B</span>
-            <span class="result-label">Healthcare Cost Savings</span>
-            <span class="result-sub delta-up" id="res-cost-sub">System-wide</span>
-          </div>
-          <div class="result-item">
-            <span class="result-value" id="res-jobs">840K</span>
-            <span class="result-label">Jobs Created</span>
-            <span class="result-sub delta-up" id="res-jobs-sub">Direct + indirect</span>
-          </div>
-        </div>
-
-        <div class="section-title">5-Year Cost Projection by Technology ($B)</div>
-        <div class="chart-wrap mb15" style="height:240px"><canvas id="scenarioCostChart" role="img" aria-label="Cost projection by technology for selected scenario"></canvas></div>
-
-        <div class="section-title">Cumulative Investment vs. Returns</div>
-        <div class="chart-wrap mb15" style="height:200px"><canvas id="roiChart" role="img" aria-label="Investment versus economic returns over time"></canvas></div>
-
-        <div class="section-title">Cost Scenario Breakdown Table</div>
-        <div style="overflow-x:auto">
-          <table class="cost-table" id="costBreakdown"></table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════ POLICY -->
-<div id="panel-policy" class="panel">
-  <div class="page-header">
-    <div class="page-eyebrow">Policy Analysis</div>
-    <h1 class="page-title">Federal Policy <em>Impact Framework</em></h1>
-    <p class="page-sub">Active, pending, and proposed federal policies shaping the healthcare technology investment landscape.</p>
-  </div>
-
-  <div class="grid-72">
-    <div>
-      <div class="section-title mb1">Policies & Regulatory Actions</div>
-      <div id="policyList"></div>
+      <canvas id="timelineChart" height="240" role="img" aria-label="Average time from research discovery to clinical deployment by technology type"></canvas>
     </div>
     <div>
-      <div class="card mb15">
-        <div class="section-title">Policy Effectiveness Model</div>
-        <div class="chart-wrap" style="height:220px"><canvas id="policyEffChart" role="img" aria-label="Policy effectiveness model across innovation equity and cost dimensions"></canvas></div>
+      <div class="ed-header" style="margin-bottom:1rem">
+        <span class="ed-issue">Key Stat</span>
+        <h3 class="ed-title" style="font-size:1.2rem">Who <span>Funds</span> What</h3>
       </div>
-      <div class="card">
-        <div class="section-title">Policy vs. Technology Linkage</div>
-        <div class="chart-wrap" style="height:220px"><canvas id="policyLinkChart" role="img" aria-label="Policy to technology investment linkage chart"></canvas></div>
-      </div>
+      <canvas id="fundingMixChart" height="240" role="img" aria-label="Funding source breakdown across technology development stages"></canvas>
     </div>
   </div>
+
+  <div class="pull-quote mt2">
+    <p>"ARPA-H was created precisely because NIH's peer-review model can't take the high-risk bets that transform medicine. The future belongs to the technologies nobody thought would work."</p>
+    <cite>— ARPA-H Mission Statement, 2022</cite>
+  </div>
+</div>
 </div>
 
-</main>
+<footer>
+  <div class="f-left">MedTech Pulse · NIH Sustainable Investment Research · Data: NIH, FDA, CMS, ARPA-H · FY2024</div>
+  <div class="f-right">Built for curious minds at the intersection of science & policy</div>
+</footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-/* ─── DATA ─────────────────────────────────────────────────────────── */
+/* ═══════════════════════ DATA ═══════════════════════════ */
 const TECHS = [
-  { id:0, name:'AI Diagnostics', sector:'AI/ML', agency:'NIH / FDA', invest:8.4, growth:34, trl:8, equity:'Moderate', timeline:'2–4 yrs', eqScore:55, costEff:90, moa:'Machine learning systems for radiology, pathology, and clinical decision support. FDA-cleared devices surging — 89 cleared in FY24 alone.', budget5:[8.4,9.8,11.5,13.4,15.6], roi:14.2, jobs:92000, diseaseArea:'Cross-cutting diagnostics', fdaPath:'De Novo / 510(k)', trlColor:'#4f8cff' },
-  { id:1, name:'mRNA Therapeutics', sector:'Biotech', agency:'BARDA / NIH', invest:11.2, growth:61, trl:8, equity:'High', timeline:'3–5 yrs', eqScore:75, costEff:55, moa:'Post-COVID platform expansion into oncology, rare disease, and HIV. BARDA maintains strategic manufacturing reserves. First FDA-approved mRNA cancer vaccine in Phase 3.', budget5:[11.2,14.8,19.5,25.8,34.1], roi:18.6, jobs:145000, diseaseArea:'Cancer, Infectious Disease', fdaPath:'BLA', trlColor:'#00d4aa' },
-  { id:2, name:'CRISPR Gene Editing', sector:'Genomics', agency:'NIH', invest:6.9, growth:48, trl:6, equity:'Low', timeline:'8–15 yrs', eqScore:30, costEff:25, moa:'First FDA-approved CRISPR therapy (Casgevy) for sickle cell disease. NIH pipeline targets 50+ rare genetic conditions. Manufacturing cost reduction is critical policy priority.', budget5:[6.9,8.4,10.2,12.4,15.1], roi:9.2, jobs:68000, diseaseArea:'Rare Disease, Cancer', fdaPath:'IND / BLA', trlColor:'#b06aff' },
-  { id:3, name:'Digital Therapeutics', sector:'Digital', agency:'FDA / CMS', invest:3.1, growth:29, trl:9, equity:'High', timeline:'1–2 yrs', eqScore:92, costEff:95, moa:'Prescription software for mental health, diabetes, and substance use disorder. CMS finalizing DTx reimbursement codes under HCPCS. 38 FDA-approved DTx products active.', budget5:[3.1,3.8,4.7,5.8,7.1], roi:22.4, jobs:44000, diseaseArea:'Mental Health, Chronic Disease', fdaPath:'De Novo / SaMD', trlColor:'#f5a623' },
-  { id:4, name:'Wearable Biosensors', sector:'Medtech', agency:'NIH / CMS', invest:2.8, growth:22, trl:9, equity:'Moderate', timeline:'1–3 yrs', eqScore:60, costEff:85, moa:'Continuous glucose monitors, cardiac event patches, multi-biomarker wristbands. NHLBI-funded population studies. CMS remote patient monitoring codes enacted 2023.', budget5:[2.8,3.3,3.8,4.4,5.1], roi:16.8, jobs:38000, diseaseArea:'Cardiovascular, Metabolic', fdaPath:'510(k) / EUA', trlColor:'#ff6b6b' },
-  { id:5, name:'Liquid Biopsy', sector:'Genomics', agency:'NCI', invest:4.1, growth:55, trl:7, equity:'Moderate', timeline:'3–6 yrs', eqScore:55, costEff:65, moa:'cfDNA-based multi-cancer early detection. CMS evaluating MCED test coverage for Medicare beneficiaries (SHIELD Act). GRAIL and Exact Sciences in pivotal trials.', budget5:[4.1,5.4,7.1,9.4,12.4], roi:19.8, jobs:56000, diseaseArea:'Oncology — Early Detection', fdaPath:'PMA / De Novo', trlColor:'#b06aff' },
-  { id:6, name:'Robotic Surgery', sector:'Medtech', agency:'DoD / VA', invest:3.6, growth:18, trl:9, equity:'Low', timeline:'Deployed', eqScore:30, costEff:60, moa:'DoD and VA leading adoption for remote and complex procedures. Intuitive Surgical da Vinci cleared; new entrants (Medtronic Hugo, CMR Surgical) expand competition. Telesurgery research ongoing.', budget5:[3.6,4.0,4.4,4.8,5.3], roi:8.4, jobs:42000, diseaseArea:'Surgical Outcomes, Trauma', fdaPath:'510(k)', trlColor:'#ff6b6b' },
-  { id:7, name:'Telehealth Platforms', sector:'Digital', agency:'CMS / FCC', invest:5.2, growth:26, trl:9, equity:'Very High', timeline:'Deployed', eqScore:95, costEff:92, moa:'Post-pandemic permanence push. CMS proposes permanent remote patient monitoring reimbursement. FCC telehealth fund: $250M deployed. Rural health access primary driver.', budget5:[5.2,6.2,7.4,8.8,10.5], roi:21.6, jobs:72000, diseaseArea:'Rural & Underserved Access', fdaPath:'N/A — CMS coverage', trlColor:'#f5a623' },
-  { id:8, name:'Federated Health AI', sector:'AI/ML', agency:'NIH / ONC', invest:2.6, growth:52, trl:6, equity:'High', timeline:'3–5 yrs', eqScore:80, costEff:88, moa:'Privacy-preserving machine learning across hospital networks. NIH Bridge2AI: $130M. Enables large-scale model training without centralizing sensitive patient data. FHIR integration critical.', budget5:[2.6,3.3,4.2,5.4,6.9], roi:17.2, jobs:34000, diseaseArea:'Population Health, Drug Discovery', fdaPath:'FDA AI/ML Action Plan', trlColor:'#4f8cff' },
-  { id:9, name:'Synthetic Biology', sector:'Biotech', agency:'BARDA / DOE', invest:3.4, growth:44, trl:5, equity:'Moderate', timeline:'5–10 yrs', eqScore:50, costEff:45, moa:'EO 14081 national bioeconomy strategy. Engineered organisms for therapeutics, diagnostics, and biofuels. DARPA Living Foundries program. Biosafety regulation expanding.', budget5:[3.4,4.2,5.2,6.5,8.1], roi:11.4, jobs:48000, diseaseArea:'Rare Disease, Biomanufacturing', fdaPath:'IND / FDA Emerging Tech', trlColor:'#00d4aa' },
-  { id:10, name:'Implantable BCI', sector:'Medtech', agency:'DARPA / NIH', invest:1.8, growth:67, trl:5, equity:'Low', timeline:'5–10 yrs', eqScore:20, costEff:20, moa:'DARPA and NIH Neural Interfaces programs. FDA Breakthrough Device Designation for paralysis and treatment-resistant depression. Neuralink, Synchron active. Long-term safety data gap.', budget5:[1.8,2.4,3.2,4.3,5.7], roi:7.8, jobs:22000, diseaseArea:'Neurology, Paralysis, Mental Health', fdaPath:'PMA / Breakthrough Device', trlColor:'#ff6b6b' },
-  { id:11, name:'Proteomics / Metabolomics', sector:'Genomics', agency:'NIH Common Fund', invest:2.3, growth:41, trl:5, equity:'Low', timeline:'6–10 yrs', eqScore:35, costEff:40, moa:'NIH Human BioMolecular Atlas Program. Beyond genomics for biomarker discovery. Olink and SomaScan platforms. Critical for drug target ID and precision medicine expansion.', budget5:[2.3,2.9,3.7,4.7,5.9], roi:13.6, jobs:28000, diseaseArea:'Drug Discovery, Precision Medicine', fdaPath:'CDx / Companion Diagnostics', trlColor:'#b06aff' },
+  {
+    id:'ai-diag', name:'AI-Powered Diagnostics', sector:'AI', color:'c-blue',
+    tags:['Deployed','High Accuracy','Radiology'],
+    tagClasses:['lt-blue','lt-teal','lt-gold'],
+    deck:'Machine learning systems that read medical images, detect anomalies, and triage patients — often surpassing human accuracy.',
+    underserved:false, earlyStage:false,
+    trl:9, growth:'+34%', equity:55,
+    whatItDoes:'AI diagnostic tools analyze X-rays, CT scans, MRIs, and pathology slides in seconds. FDA-cleared systems detect diabetic retinopathy, lung nodules, and stroke with >90% sensitivity — reducing missed diagnoses and radiologist burnout.',
+    healthProblem:'Diagnostic delays kill. In rural counties with zero radiologists, AI can provide same-day image reads. In overwhelmed ERs, AI triage identifies high-risk patients before deterioration.',
+    clinicalImpact:'2.4M','clinicalLabel':'Images read/day by AI',
+    deployment:'National','deployLabel':'Coverage Potential',
+    bottleneck:'Reimbursement','bottleneckLabel':'Key Barrier',
+    progress:[{l:'Clinical readiness',v:92,c:'#1a4f8a'},{l:'Equity reach',v:45,c:'#c0392b'},{l:'Adoption rate',v:58,c:'#0d7a6b'}],
+    policyNote:'CMS reimbursement codes for AI-assisted reads remain inconsistently defined. A standardized CPT pathway would accelerate adoption in safety-net hospitals.',
+    diseaseTags:['cancer','chronic']
+  },
+  {
+    id:'mrna', name:'mRNA Therapeutics', sector:'Biotech', color:'c-teal',
+    tags:['Post-COVID Platform','Oncology Pipeline','Manufacturing Scale'],
+    tagClasses:['lt-teal','lt-red','lt-gold'],
+    deck:'The COVID-19 vaccine platform is now being retooled to fight cancer, HIV, influenza, and rare diseases — the most flexible drug-delivery technology ever created.',
+    underserved:false, earlyStage:false,
+    trl:8, growth:'+61%', equity:70,
+    whatItDoes:'mRNA instructs cells to produce specific proteins — either a pathogen antigen (for vaccines) or a therapeutic protein (for cancer or rare disease). No DNA modification required. Sequences can be redesigned in days.',
+    healthProblem:'Cancer is 200+ distinct diseases. mRNA can be personalized to each tumor\'s unique mutation profile. Moderna and BioNTech are in Phase 3 for individualized cancer vaccines for melanoma and pancreatic cancer.',
+    clinicalImpact:'17','clinicalLabel':'Cancer types in trials',
+    deployment:'3–5 yrs','deployLabel':'Oncology timeline',
+    bottleneck:'Manufacturing','bottleneckLabel':'Key Barrier',
+    progress:[{l:'Platform readiness',v:88,c:'#0d7a6b'},{l:'Equity reach',v:68,c:'#c0392b'},{l:'Disease coverage',v:72,c:'#1a4f8a'}],
+    policyNote:'BARDA\'s strategic reserve program ensures domestic mRNA manufacturing capacity. EO 14081 expanded this to cancer therapeutics. International access remains a policy gap.',
+    diseaseTags:['cancer','infectious']
+  },
+  {
+    id:'crispr', name:'CRISPR Gene Editing', sector:'Genomics', color:'c-violet',
+    tags:['FDA Approved','Rare Disease','Curative Potential'],
+    tagClasses:['lt-violet','lt-red','lt-teal'],
+    deck:'The first FDA-approved CRISPR therapy (Casgevy) cured sickle cell disease in 2023. It may be the most precise medical tool ever built — and the most expensive.',
+    underserved:true, earlyStage:false,
+    trl:7, growth:'+48%', equity:28,
+    whatItDoes:'CRISPR-Cas9 acts as molecular scissors — cutting DNA at exact sequences to correct mutations, silence genes, or insert new code. In blood disorders, a one-time edit can be curative.',
+    healthProblem:'Sickle cell disease affects 100,000 Americans — predominantly Black. Beta-thalassemia, a related disorder, affects 1 in 100,000. Both are now potentially curable with a single treatment.',
+    clinicalImpact:'100K','clinicalLabel':'Americans with sickle cell',
+    deployment:'$2.2M','deployLabel':'Cost per patient',
+    bottleneck:'Access & Cost','bottleneckLabel':'Key Barrier',
+    progress:[{l:'Scientific readiness',v:78,c:'#5b2d8e'},{l:'Equity reach',v:22,c:'#c0392b'},{l:'Cost reduction path',v:35,c:'#0d7a6b'}],
+    policyNote:'At $2.2M per treatment, Casgevy is inaccessible without Medicaid reform. NIH\'s Somatic Cell Genome Editing program funds manufacturing cost reduction. CMS must establish coverage with evidence development pathways.',
+    diseaseTags:['rare','cancer']
+  },
+  {
+    id:'digital-rx', name:'Digital Therapeutics (DTx)', sector:'Digital', color:'c-blue',
+    tags:['FDA Cleared','Mental Health','Chronic Disease'],
+    tagClasses:['lt-blue','lt-violet','lt-gold'],
+    deck:'Software that is itself the treatment — prescription apps for addiction, depression, diabetes, and ADHD. The cheapest scalable intervention in healthcare history.',
+    underserved:true, earlyStage:false,
+    trl:9, growth:'+29%', equity:88,
+    whatItDoes:'DTx are clinically validated software programs delivered on smartphones. reSET-O reduces opioid use disorder relapse by 40%. EndeavorRx improves ADHD attention scores. BlueStar manages Type 2 diabetes with personalized nudges and data.',
+    healthProblem:'158M Americans have a chronic condition. 57M have a mental health disorder. 80% will never see a specialist. DTx can be prescribed from a primary care visit and accessed immediately — no waitlist, no commute.',
+    clinicalImpact:'57M','clinicalLabel':'Americans w/ mental illness',
+    deployment:'$0–$50/mo','deployLabel':'vs. $200/hr therapy',
+    bottleneck:'Reimbursement','bottleneckLabel':'Key Barrier',
+    progress:[{l:'Clinical evidence',v:82,c:'#1a4f8a'},{l:'Equity reach',v:88,c:'#c0392b'},{l:'Provider adoption',v:42,c:'#0d7a6b'}],
+    policyNote:'CMS finalized remote therapeutic monitoring codes in 2023 but excluded most DTx. A dedicated HCPCS code for prescription DTx is the single highest-leverage policy action in digital health.',
+    diseaseTags:['mental','chronic']
+  },
+  {
+    id:'liquid-biopsy', name:'Liquid Biopsy', sector:'Genomics', color:'c-red',
+    tags:['Early Detection','Blood Test','Oncology'],
+    tagClasses:['lt-red','lt-teal','lt-gold'],
+    deck:'A blood test that detects cancer DNA shed by tumors — potentially catching cancer years before symptoms appear, at Stage I when survival rates exceed 90%.',
+    underserved:false, earlyStage:false,
+    trl:7, growth:'+55%', equity:60,
+    whatItDoes:'Circulating tumor DNA (ctDNA) fragments float in the bloodstream. Next-generation sequencing identifies cancer-specific mutations. Multi-cancer early detection (MCED) tests like Galleri screen for 50+ cancers simultaneously from a single blood draw.',
+    healthProblem:'Over 600,000 Americans die of cancer annually. 70% are diagnosed at Stage III or IV when treatment is difficult and expensive. A $1,000 annual blood test could shift the diagnostic window by 4–6 years for many cancers.',
+    clinicalImpact:'>50','clinicalLabel':'Cancers detectable',
+    deployment:'$1,000/test','deployLabel':'Current cost',
+    bottleneck:'Medicare Coverage','bottleneckLabel':'Key Barrier',
+    progress:[{l:'Scientific readiness',v:72,c:'#c0392b'},{l:'Equity reach',v:55,c:'#5b2d8e'},{l:'Coverage progress',v:38,c:'#0d7a6b'}],
+    policyNote:'The SHIELD Act would mandate Medicare coverage for MCED tests for adults 50+. CMS analysis shows $28B in downstream treatment savings if 20% adoption is achieved. Currently stalled in Senate Finance Committee.',
+    diseaseTags:['cancer']
+  },
+  {
+    id:'telehealth', name:'Telehealth & Remote Care', sector:'Digital', color:'c-gold',
+    tags:['Deployed','Rural Access','CMS Coverage'],
+    tagClasses:['lt-teal','lt-red','lt-blue'],
+    deck:'Video visits, remote patient monitoring, and asynchronous care broke through during COVID — and proved that geography doesn\'t have to determine healthcare quality.',
+    underserved:false, earlyStage:false,
+    trl:9, growth:'+26%', equity:92,
+    whatItDoes:'Telehealth platforms enable synchronous video visits, asynchronous messaging (store-and-forward), and continuous remote monitoring. RPM devices send daily blood pressure, glucose, weight, and oxygen data to care teams.',
+    healthProblem:'60 million Americans live in rural areas. Over 30% of rural counties have no psychiatrist. Telehealth eliminates the 2-hour round-trip drive that causes many rural patients to simply skip care.',
+    clinicalImpact:'38M','clinicalLabel':'Rural Medicare beneficiaries',
+    deployment:'74%','deployLabel':'Cost reduction vs. in-person',
+    bottleneck:'Permanence','bottleneckLabel':'Key Barrier',
+    progress:[{l:'Deployment scale',v:90,c:'#b8860b'},{l:'Equity reach',v:88,c:'#c0392b'},{l:'Payer coverage',v:62,c:'#0d7a6b'}],
+    policyNote:'Pandemic-era telehealth waivers expire in 2024 unless Congress acts. The Medicare Telehealth Permanence Act would lock in coverage for audio-only visits and RPM. Rural health organizations are its strongest advocates.',
+    diseaseTags:['chronic','mental']
+  },
+  {
+    id:'wearables', name:'Wearable Biosensors', sector:'Devices', color:'c-teal',
+    tags:['Consumer Grade','Cardiac','Metabolic'],
+    tagClasses:['lt-teal','lt-red','lt-gold'],
+    deck:'From Apple Watch ECGs to continuous glucose monitors — wearable sensors are turning patients into real-time data streams, enabling proactive rather than reactive care.',
+    underserved:false, earlyStage:false,
+    trl:9, growth:'+22%', equity:58,
+    whatItDoes:'Modern wearables measure heart rate variability, SpO2, ECG, skin temperature, galvanic skin response, and interstitial glucose. The iRhythm Zio patch can detect atrial fibrillation over 14 days — catching arrhythmias that a 30-second in-office ECG would miss.',
+    healthProblem:'Atrial fibrillation causes 1 in 7 strokes. Type 2 diabetes affects 37M Americans and costs $327B/year. Continuous monitoring enables micro-interventions that flatten glycemic curves and catch cardiac events before they become emergencies.',
+    clinicalImpact:'37M','clinicalLabel':'Americans with diabetes',
+    deployment:'$35–$300','deployLabel':'Monthly sensor cost',
+    bottleneck:'Equity & Cost','bottleneckLabel':'Key Barrier',
+    progress:[{l:'Technical readiness',v:95,c:'#0d7a6b'},{l:'Equity reach',v:52,c:'#c0392b'},{l:'Clinical integration',v:65,c:'#1a4f8a'}],
+    policyNote:'CGM coverage under Medicare Part B requires a qualifying diagnosis and physician order. Expanding CGM access to all diabetic Medicare beneficiaries — not just insulin users — is the most impactful near-term device policy.',
+    diseaseTags:['chronic','cancer']
+  },
+  {
+    id:'bci', name:'Brain-Computer Interfaces', sector:'Neuro', color:'c-violet',
+    tags:['Early Stage','Paralysis','Mental Health'],
+    tagClasses:['lt-violet','lt-red','lt-blue'],
+    deck:'Direct neural interfaces that let paralyzed patients type with thought, restore speech, and — eventually — treat depression by precisely modulating brain circuits.',
+    underserved:true, earlyStage:true,
+    trl:5, growth:'+67%', equity:20,
+    whatItDoes:'Implantable BCIs decode neural firing patterns and translate them into digital commands. BrainGate allowed quadriplegic patients to type 40 words per minute using thought alone. Neuralink\'s N1 chip transmitted neural signals at 1000x the bandwidth of prior devices. Closed-loop DBS systems are treating treatment-resistant depression.',
+    healthProblem:'3.5M Americans live with paralysis. 2.8M have treatment-resistant depression — having failed 2+ antidepressants. These populations have essentially no other therapeutic options, making BCI a potential last-resort cure.',
+    clinicalImpact:'3.5M','clinicalLabel':'Americans with paralysis',
+    deployment:'5–10 yrs','deployLabel':'Population scale timeline',
+    bottleneck:'Safety Data','bottleneckLabel':'Key Barrier',
+    progress:[{l:'Scientific readiness',v:52,c:'#5b2d8e'},{l:'Equity reach',v:18,c:'#c0392b'},{l:'Regulatory clarity',v:38,c:'#1a4f8a'}],
+    policyNote:'FDA granted Breakthrough Device Designation to multiple BCI programs. DARPA\'s Neural Engineering System Design program has invested $100M. NIH\'s BRAIN Initiative funds the fundamental neuroscience. Federal coordination between agencies remains fragmented.',
+    diseaseTags:['neuro','mental']
+  },
+  {
+    id:'synthetic-bio', name:'Synthetic Biology', sector:'Biotech', color:'c-gold',
+    tags:['Early Stage','Manufacturing','Drug Discovery'],
+    tagClasses:['lt-gold','lt-teal','lt-violet'],
+    deck:'Engineering living cells to produce medicines, diagnostics, and materials. Bacteria that manufacture insulin. Yeast that produce anti-cancer compounds. Organisms designed from the ground up.',
+    underserved:false, earlyStage:true,
+    trl:5, growth:'+44%', equity:48,
+    whatItDoes:'Synthetic biology programs biological circuits into living cells. Genetically engineered E. coli now produce 100% of the world\'s insulin. Next-generation approaches use cell-free systems to manufacture vaccines without fermentation, and engineered phages to target antibiotic-resistant bacteria.',
+    healthProblem:'Antibiotic resistance kills 700,000 people globally each year. By 2050, that number reaches 10 million. Phage therapy — using engineered viruses to kill resistant bacteria — is emerging as the answer synthetic biology can build.',
+    clinicalImpact:'700K','clinicalLabel':'Annual AMR deaths globally',
+    deployment:'5–10 yrs','deployLabel':'Phage therapy timeline',
+    bottleneck:'Regulatory Framework','bottleneckLabel':'Key Barrier',
+    progress:[{l:'Scientific readiness',v:55,c:'#b8860b'},{l:'Equity reach',v:48,c:'#c0392b'},{l:'Manufacturing readiness',v:62,c:'#0d7a6b'}],
+    policyNote:'EO 14081 established the National Biotechnology and Biomanufacturing Initiative. No FDA regulatory pathway exists for engineered phage therapies. Creating a Breakthrough Therapy designation for phage-based AMR treatments is urgent.',
+    diseaseTags:['infectious','rare']
+  },
+  {
+    id:'federated-ai', name:'Federated Health AI', sector:'AI', color:'c-blue',
+    tags:['Privacy-First','Early Stage','Drug Discovery'],
+    tagClasses:['lt-blue','lt-violet','lt-teal'],
+    deck:'AI models trained across hospital networks without any patient data ever leaving the building — solving the privacy paradox at the heart of medical AI.',
+    underserved:true, earlyStage:true,
+    trl:6, growth:'+52%', equity:72,
+    whatItDoes:'Federated learning sends the model to the data instead of the data to the model. Each hospital trains on its local patients; only model weights — not patient records — are shared. This enables rare disease models trained on globally distributed patient populations without any data export.',
+    healthProblem:'Rare disease affects 1 in 10 Americans but no single hospital has enough patients to train an AI. Federated AI allows Stanford, Mayo, and 50 community hospitals to together train a model that none could build alone — without violating HIPAA.',
+    clinicalImpact:'30M','clinicalLabel':'Rare disease Americans',
+    deployment:'3–5 yrs','deployLabel':'Clinical deployment',
+    bottleneck:'Data Standards','bottleneckLabel':'Key Barrier',
+    progress:[{l:'Technical readiness',v:65,c:'#1a4f8a'},{l:'Equity reach',v:72,c:'#c0392b'},{l:'Adoption momentum',v:48,c:'#0d7a6b'}],
+    policyNote:'NIH\'s Bridge2AI program ($130M) is building federated infrastructure. TEFCA/FHIR mandates create the data rails. The missing piece: a federal standard for federated model sharing that protects IP while enabling collaboration.',
+    diseaseTags:['rare','cancer','chronic']
+  },
+  {
+    id:'point-of-care', name:'Point-of-Care Diagnostics', sector:'Devices', color:'c-red',
+    tags:['Global Health','Access','Rapid Results'],
+    tagClasses:['lt-red','lt-gold','lt-teal'],
+    deck:'Lab-quality diagnostics in a handheld device — enabling HIV, TB, malaria, and sepsis diagnosis at the bedside, in the clinic, or in a village with no electricity.',
+    underserved:true, earlyStage:false,
+    trl:8, growth:'+38%', equity:95,
+    whatItDoes:'Microfluidic chips and CRISPR-based diagnostics (SHERLOCK, DETECTR) perform PCR-equivalent tests in 15 minutes without laboratory infrastructure. A smartphone-connected lateral flow reader can diagnose 20 conditions from a fingertip blood drop.',
+    healthProblem:'2 billion people lack access to basic laboratory diagnostics. In the U.S., health deserts in rural Appalachia and tribal nations have the same access gap. A sepsis test that takes 3 days in a hospital lab kills patients who could be saved with a 20-minute bedside answer.',
+    clinicalImpact:'2B','clinicalLabel':'People w/ no lab access',
+    deployment:'72hrs → 20min','deployLabel':'Sepsis diagnosis improvement',
+    bottleneck:'FDA Clearance Speed','bottleneckLabel':'Key Barrier',
+    progress:[{l:'Technical readiness',v:82,c:'#c0392b'},{l:'Equity reach',v:92,c:'#5b2d8e'},{l:'Regulatory speed',v:45,c:'#0d7a6b'}],
+    policyNote:'FDA\'s EUA pathway for pandemics showed what rapid clearance looks like. A permanent "Equity Device" designation for diagnostics targeting underserved populations — with expedited review — could transform access.',
+    diseaseTags:['infectious','rare','chronic']
+  },
+  {
+    id:'proteomics', name:'Proteomics & Multi-Omics', sector:'Genomics', color:'c-violet',
+    tags:['Early Stage','Drug Discovery','Precision Medicine'],
+    tagClasses:['lt-violet','lt-teal','lt-gold'],
+    deck:'Measuring thousands of proteins simultaneously to understand disease at a molecular level — the layer of biology between genes and symptoms where most drug targets live.',
+    underserved:false, earlyStage:true,
+    trl:5, growth:'+41%', equity:40,
+    whatItDoes:'The proteome is the full set of proteins expressed by a cell. Unlike the genome (static), the proteome changes minute-to-minute with disease, drug exposure, and environment. SomaScan and Olink platforms measure 7,000+ proteins from a single blood sample — finding drug targets invisible to genomics alone.',
+    healthProblem:'90% of drug candidates fail in clinical trials. Most fail because we didn\'t understand the disease mechanism deeply enough. Proteomics identifies the actual proteins that differ between sick and healthy tissue — giving drug developers a validated target before spending $1B.',
+    clinicalImpact:'90%','clinicalLabel':'Clinical trial failure rate',
+    deployment:'6–10 yrs','deployLabel':'Drug discovery integration',
+    bottleneck:'Data Infrastructure','bottleneckLabel':'Key Barrier',
+    progress:[{l:'Scientific readiness',v:58,c:'#5b2d8e'},{l:'Equity reach',v:38,c:'#c0392b'},{l:'Clinical integration',v:32,c:'#0d7a6b'}],
+    policyNote:'NIH\'s Human BioMolecular Atlas Program and All of Us Research Program are generating the reference datasets. The breakthrough will come when proteomics data is integrated into the EHR alongside genomic data — requiring ONC standard development.',
+    diseaseTags:['cancer','rare']
+  },
 ];
 
-const POLICIES = [
-  { name:'ARPA-H Expansion Act', status:'Proposed', statusClass:'badge-blue', agency:'HHS / Congress', desc:'Doubles ARPA-H funding to $5B/yr with 4 regional offices focused on rural and underserved communities. Authorizes high-risk biomedical moonshot programs with 3-year no-fault funding. Would accelerate TRL 1–4 research pipeline nationally.', innovation:92, equity:68, cost:70, techs:['mRNA Therapeutics','CRISPR Gene Editing','Synthetic Biology','Implantable BCI'], impact:'$2.5B incremental | 14,000 R&D jobs | 3-5yr accelerated timelines' },
-  { name:'TEFCA / FHIR Interoperability Rule', status:'Active', statusClass:'badge-green', agency:'ONC / CMS', desc:'Mandates FHIR API adoption across all CMS-participating providers. Enables data portability for AI model training at scale. Unlocks approximately 400M patient records for federated learning pipelines. Full compliance required by 2026.', innovation:78, equity:72, cost:85, techs:['AI Diagnostics','Federated Health AI','Telehealth Platforms','Digital Therapeutics'], impact:'400M records unlocked | $4.8B EHR market shift | 3× AI model accuracy' },
-  { name:'FDA AI/ML Software Action Plan', status:'Active', statusClass:'badge-green', agency:'FDA CDRH', desc:'Adaptive approval framework for AI-based Software as a Medical Device (SaMD). Predetermined change control plans allow continuous model improvement post-market. Post-market surveillance algorithm performance requirements. 89 AI/ML devices cleared in FY24 — a record high.', innovation:88, equity:55, cost:80, techs:['AI Diagnostics','Federated Health AI','Wearable Biosensors'], impact:'3× faster clearance | 89 devices FY24 | $12B SaMD market created' },
-  { name:'Medicare Telehealth Permanence Act', status:'Pending', statusClass:'badge-amber', agency:'CMS / Congress', desc:'Makes pandemic-era telehealth waivers permanent. Adds reimbursement for remote patient monitoring devices and audio-only visits. Extends geographic restrictions waiver indefinitely. Estimated 38M rural Medicare beneficiaries directly served upon passage.', innovation:55, equity:91, cost:88, techs:['Telehealth Platforms','Digital Therapeutics','Wearable Biosensors'], impact:'38M rural beneficiaries | $6.2B DTx market expansion | 22% ED reduction' },
-  { name:'National Biotech & Biosecurity Strategy', status:'Active', statusClass:'badge-green', agency:'EO 14081 / BARDA', desc:'Executive Order establishing federal bioeconomy strategy. Domestic biomanufacturing corridors funded via BARDA. Manufacturing reserve fund for 12 critical biologics. Supply chain resilience for pandemic-era biologics. Allied with $2.1B domestic manufacturing investment.', innovation:85, equity:60, cost:65, techs:['mRNA Therapeutics','Synthetic Biology','CRISPR Gene Editing'], impact:'$2.1B domestic mfg | 12 biosecure supply chains | 4 manufacturing hubs' },
-  { name:'Health Equity Data Collection Rule', status:'Active', statusClass:'badge-green', agency:'HHS / FDA / NIH', desc:'Requires race, ethnicity, disability status, and social determinants of health (SDOH) data collection in all federally funded clinical trials and FDA device submissions. Targets bias reduction in AI training datasets. Sets 22% diverse enrollment benchmark for NIH grants.', innovation:62, equity:95, cost:55, techs:['AI Diagnostics','Federated Health AI','Digital Therapeutics'], impact:'22% diverse trial enrollment | AI bias reduction | SDOH data standardized' },
-  { name:'MCED Coverage (SHIELD Act)', status:'Pending', statusClass:'badge-amber', agency:'CMS / Congress', desc:'Medicare coverage for multi-cancer early detection (MCED) blood tests. Galleri, GRAIL, and Shield tests in CMS evidence review. Estimated $1.4B annual coverage cost offset by downstream cancer treatment cost reduction (estimated $28B saved if 20% adoption achieved).', innovation:70, equity:75, cost:72, techs:['Liquid Biopsy','AI Diagnostics'], impact:'20M Medicare beneficiaries eligible | $28B downstream savings | 100K cancers/yr detected early' },
+const UNDERFUNDED = [
+  {
+    number:'01', area:'Mental Health & Substance Use', title:'The Care Desert Crisis',
+    gapLabel:'Treatment Gap', gap:'$52B/yr',
+    desc:'Mental health conditions affect 57 million Americans — nearly 1 in 5. Yet the U.S. has a severe shortage of psychiatrists, psychologists, and addiction specialists, with 150 million people living in designated Mental Health Professional Shortage Areas. Substance use disorder receives a fraction of the clinical attention of equivalent physical illness. Black, Latino, and rural communities face compounded barriers including stigma, cost, language access, and provider racism.',
+    solutions:[
+      {icon:'📱', text:'<strong>Digital therapeutics</strong> (prescription apps like reSET-O for opioid use disorder) can scale treatment at near-zero marginal cost — if CMS establishes reimbursement.'},
+      {icon:'🤖', text:'<strong>AI-assisted therapy platforms</strong> (Woebot, Wysa) show clinical equivalence to 8-week CBT programs in moderate depression — deployable at rural health clinics instantly.'},
+      {icon:'📡', text:'<strong>Telehealth permanence</strong> — making audio-only Medicare mental health visits permanent would eliminate the video-access barrier for elderly and low-income patients.'},
+      {icon:'🧬', text:'<strong>Pharmacogenomics</strong> can predict which antidepressant will work for which patient, cutting the average 6-month trial-and-error period to a single blood test.'},
+    ],
+    stats:[{num:'150M',label:'In Shortage Areas'},{num:'1:6',label:'Psychiatrist Ratio'},{num:'$280B',label:'Annual Economic Cost'},{num:'57%',label:'Go Untreated'}],
+    color:'var(--red)'
+  },
+  {
+    number:'02', area:'Maternal & Reproductive Health', title:'The Hidden American Emergency',
+    gapLabel:'Mortality Gap vs. Peers', gap:'2–4×',
+    desc:'The United States has the highest maternal mortality rate among high-income nations — a rate that has been rising since 2000 while peer countries\' rates fell. The crisis is not evenly distributed: Black women die from pregnancy-related complications at 2.6 times the rate of white women. American Indian and Alaska Native women face a similar disparity. These deaths are overwhelmingly preventable — 84% occur in the first year postpartum, and over 60% occur after hospital discharge.',
+    solutions:[
+      {icon:'📊', text:'<strong>Remote maternal monitoring</strong> wearables tracking blood pressure, heart rate, and movement can detect preeclampsia warning signs before a crisis. Currently uncovered by most state Medicaid plans.'},
+      {icon:'🏥', text:'<strong>OB-GYN deserts</strong> in rural counties can be bridged by advanced practice midwives and nurse practitioners using telehealth protocols — requiring state licensure reform.'},
+      {icon:'🤱', text:'<strong>Postpartum care extensions</strong> — 12-month Medicaid coverage (vs. current 60-day standard) gives technology time to catch the late complications that kill most mothers.'},
+      {icon:'🧠', text:'<strong>Maternal mental health AI screening</strong> tools can detect postpartum depression at the 2-week visit, triggering intervention before the 6-week gap in care.'},
+    ],
+    stats:[{num:'84%',label:'Deaths Preventable'},{num:'2.6×',label:'Black vs. White Rate'},{num:'60%',label:'After Discharge'},{num:'#1',label:'Among Wealthy Nations'}],
+    color:'var(--violet)'
+  },
+  {
+    number:'03', area:'Rare & Neglected Diseases', title:'The 7,000-Disease Void',
+    gapLabel:'Conditions w/o Treatment', gap:'95%',
+    desc:'7,000 distinct rare diseases affect 30 million Americans. 95% have no FDA-approved treatment. The economics are brutal: a drug company developing a therapy for a disease affecting 5,000 patients can never recoup Phase 3 trial costs at standard pricing — unless the drug costs $500,000 per year. The Orphan Drug Act created tax credits and market exclusivity that partially solved this, but the most neglected diseases affect populations in the developing world where no market premium is possible.',
+    solutions:[
+      {icon:'🧬', text:'<strong>CRISPR platform therapies</strong> can be reprogrammed for different genetic targets with the same base technology — dramatically reducing per-disease development costs once the platform is validated.'},
+      {icon:'🤝', text:'<strong>Public-private consortia</strong> (like the Rare Disease Cures Accelerator-Data Analytics Platform) pool patient data across pharma competitors to reach statistical significance in underpowered trials.'},
+      {icon:'💻', text:'<strong>AI drug repurposing</strong> — screening FDA-approved drugs against rare disease targets — has identified 15+ potential treatments in the past 3 years at a fraction of de novo development cost.'},
+      {icon:'🏛️', text:'<strong>ARPA-H moonshot programs</strong> targeting rare disease platforms (not individual drugs) can fund the riskiest early work that the market will never touch.'},
+    ],
+    stats:[{num:'7,000',label:'Rare Diseases'},{num:'30M',label:'Americans Affected'},{num:'95%',label:'Untreated'},{num:'$2.2M',label:'Cost of 1st CRISPR Cure'}],
+    color:'var(--gold)'
+  },
+  {
+    number:'04', area:'Climate & Environmental Health', title:'The Emerging Exposure Crisis',
+    gapLabel:'Research Funding Gap', gap:'<1% NIH',
+    desc:'Less than 1% of NIH\'s budget goes to climate-related health research, despite climate change being projected to cause 250,000 additional deaths annually by 2030. Heat illness, air quality-related respiratory disease, vector expansion (Lyme, West Nile, dengue), and mental health impacts of climate anxiety and displacement are all growing — and almost entirely unaddressed by the healthcare technology sector.',
+    solutions:[
+      {icon:'🌡️', text:'<strong>Heat illness early warning systems</strong> using population health data and weather APIs could auto-trigger cooling center resources and outreach to high-risk elderly populations.'},
+      {icon:'💨', text:'<strong>Portable air quality diagnostics</strong> integrated with asthma management apps can correlate PM2.5 spikes with symptom flares, enabling predictive pre-medication.'},
+      {icon:'🦟', text:'<strong>AI vector surveillance</strong> systems (tracking mosquito and tick populations via remote sensing and citizen science) can forecast disease outbreak risk by county 3 weeks in advance.'},
+      {icon:'🧘', text:'<strong>Climate anxiety mental health protocols</strong> — structured CBT programs specifically for ecological grief and climate-related PTSD — are not yet covered by any major payer.'},
+    ],
+    stats:[{num:'<1%',label:'NIH Budget Share'},{num:'250K',label:'Projected Deaths/yr'},{num:'$820B',label:'US Health Cost by 2050'},{num:'0',label:'Dedicated Fed Agencies'}],
+    color:'var(--teal)'
+  },
+  {
+    number:'05', area:'Indigenous & Tribal Health', title:'The Sovereignty Gap in Healthcare Technology',
+    gapLabel:'Life Expectancy Gap', gap:'5.5 yrs',
+    desc:'American Indian and Alaska Native (AIAN) populations have a life expectancy 5.5 years lower than the U.S. average. The Indian Health Service (IHS) — the federal agency responsible for providing care — operates at 44 cents on the dollar compared to per-capita federal spending for other Americans. Health technology has largely bypassed tribal communities: connectivity gaps mean most telehealth platforms don\'t work; AI models trained on majority-population data perform poorly on AIAN patients; traditional medicine integration is systematically excluded from clinical trials.',
+    solutions:[
+      {icon:'📡', text:'<strong>Tribal broadband investment</strong> through FCC and USDA programs is the prerequisite for any digital health deployment — 24% of tribal lands still lack broadband.'},
+      {icon:'🏥', text:'<strong>IHS-specific AI models</strong> trained on IHS patient data (with tribal data sovereignty protections) could improve chronic disease management for diabetes and cardiovascular disease — both epidemic in AIAN populations.'},
+      {icon:'🌿', text:'<strong>Traditional medicine integration platforms</strong> — EHR modules that document and respect traditional healing practices alongside Western protocols — exist but receive no federal support.'},
+      {icon:'🎓', text:'<strong>Tribal STEM-to-healthcare pathways</strong> funded through IHS scholarships would build a pipeline of AIAN researchers who understand community needs.'},
+    ],
+    stats:[{num:'5.5yr',label:'Life Expectancy Gap'},{num:'44¢',label:'Per $1 Federal Peer Spend'},{num:'24%',label:'No Broadband Access'},{num:'574',label:'Federally Recognized Tribes'}],
+    color:'var(--blue)'
+  },
 ];
 
-const PRESETS = {
-  aiFirst: { AI:40, Genomics:15, Medtech:10, Digital:25, Biotech:10, reg:80, eq:35, pp:25, budget:350 },
-  equity: { AI:15, Genomics:20, Medtech:10, Digital:35, Biotech:20, reg:50, eq:90, pp:15, budget:300 },
-  balanced: { AI:24, Genomics:20, Medtech:17, Digital:20, Biotech:19, reg:60, eq:60, pp:20, budget:320 },
-  moonshot: { AI:20, Genomics:30, Medtech:5, Digital:15, Biotech:30, reg:70, eq:50, pp:30, budget:500 },
+const MARKET_LENSES = {
+  approval:{
+    label:'FDA Approval Pathways',
+    body:`The FDA's approval pathway determines everything about how a medical technology reaches patients — and how fast. Choosing the wrong pathway can cost a company 3 years and $200M. Understanding pathway logic is essential for any MedTech policy role.`,
+    mechanisms:[
+      {label:'510(k) Clearance', content:'For devices substantially equivalent to a predicate device already on the market. Most wearables, diagnostic devices, and software go here. Average review: 3–6 months. The backbone of medical device commercialization.'},
+      {label:'De Novo Classification', content:'For novel, low-to-moderate risk devices with no predicate. Creates a new regulatory category — and that category becomes the predicate for future 510(k)s. AI diagnostic tools often use this pathway.'},
+      {label:'PMA (Premarket Approval)', content:'For high-risk devices like implantables and life-sustaining equipment. Requires clinical trial evidence. Takes 3–7 years and costs $50–$100M. Implantable BCIs, LVAD, and cochlear implants.'},
+      {label:'Breakthrough Device', content:'Expedited pathway for devices treating serious/life-threatening conditions. Provides interactive FDA review. CRISPR therapies, certain BCIs, and novel cancer diagnostics have received this designation.'},
+      {label:'BLA (Biologics License)', content:'For biologic drugs including mRNA vaccines and gene therapies. Clinical trial evidence required. The path for Casgevy (CRISPR sickle cell) and Moderna\'s cancer vaccine.'},
+      {label:'EUA (Emergency Use)', content:'Pandemic-demonstrated pathway that showed the FDA can clear life-saving products in days. The policy question: how much of this speed can be institutionalized for non-emergency high-need situations?'},
+    ]
+  },
+  reimbursement:{
+    label:'Reimbursement: The Real Gatekeeper',
+    body:`FDA approval gets a technology to market. Reimbursement determines if patients can actually afford it. CMS (Medicare/Medicaid) covers 150 million Americans and sets the price standard that private insurers follow. Without a reimbursement code, even an FDA-approved breakthrough sits on the shelf.`,
+    mechanisms:[
+      {label:'CPT Codes (Physician Services)', content:'Current Procedural Terminology codes define what a physician does and what they\'re paid. AI-assisted image reads have been added, but inconsistently. A new CPT code takes 3+ years to create — a massive innovation bottleneck.'},
+      {label:'HCPCS Codes (Devices & Supplies)', content:'For durable medical equipment and devices. CGMs, wearable cardiac monitors, and DTx products need HCPCS codes. CMS has added RPM codes but excluded most prescription digital therapeutics.'},
+      {label:'DRG (Hospital Payment)', content:'Hospitals are paid a flat fee per diagnosis-related group regardless of actual costs. This incentivizes efficiency technologies (AI that reduces radiologist time) but penalizes expensive innovations with unclear outcome data.'},
+      {label:'Coverage with Evidence Development', content:'CMS pays for a technology while mandating data collection to build the evidence base. Liquid biopsy tests are candidates. It\'s a compromise that gets patients access without waiting 10 years for RCT data.'},
+      {label:'Value-Based Contracts', content:'Payers pay for outcomes, not procedures. Wearable RPM devices that demonstrably reduce hospitalizations are renegotiating payer contracts based on prevented admissions. The future of MedTech reimbursement.'},
+      {label:'State Medicaid Variation', content:'Each state runs its own Medicaid coverage rules. A digital therapeutic covered in California may be excluded in Mississippi. Federal minimum standards for digital health coverage could eliminate this patchwork.'},
+    ]
+  },
+  valleyofdeath:{
+    label:'The Valley of Death',
+    body:`There is a funding chasm between basic research (NIH grants) and commercial investment (venture capital). Technologies that work in the lab but lack clinical proof can't get VC funding — and can't get NIH grants because they're no longer "basic research." Thousands of life-saving ideas die here.`,
+    mechanisms:[
+      {label:'Phase I: NIH & Academia', content:'Discovery research. Mechanism validation. Small molecule hits. NIH R01 grants ($500K–$2M) fund this. No commercial pressure. This is where most academic MedTech is born — and where most of it stays.'},
+      {label:'Phase II: The Gap', content:'IND-enabling studies, first-in-human feasibility, early clinical proof. Costs $2–15M. Too applied for NIH; too risky for VCs. SBIR/STTR grants and the NIH NCATS Bridge Awards partially address this — but demand vastly exceeds supply.'},
+      {label:'Phase III: VC & Strategics', content:'VC enters at proof-of-concept with clinical data. Series A ($10–50M) funds Phase 2 trials. The survivors of the Valley. Late-stage investors (Deerfield, OrbiMed) fund Phase 3 for near-launch assets.'},
+      {label:'ARPA-H\'s Role', content:'Explicitly designed to fund the Valley. No-fault contracting means a program can be cancelled without stigma. Milestone-based payments. Designed to take the bets traditional NIH study sections are too risk-averse to fund.'},
+      {label:'SBIR/STTR Programs', content:'$3.7B annually in small business grants. Phase I ($300K) for feasibility, Phase II ($2M) for development. Critical for university spinouts before they\'re VC-ready. Chronically oversubscribed.'},
+      {label:'Philanthropic Bridges', content:'Chan Zuckerberg Initiative, Gates Foundation, and Wellcome Trust are filling Valley gaps at the intersection of rare disease, global health, and mental health — areas commercial VC ignores entirely.'},
+    ]
+  },
+  platform:{
+    label:'Platform Effects in MedTech',
+    body:`The biggest breakthroughs aren't single products — they're platforms that enable entire categories of new therapies. mRNA is a platform. CRISPR is a platform. The FDA approval of a platform product unlocks a therapeutic universe.`,
+    mechanisms:[
+      {label:'mRNA as a Platform', content:'The COVID vaccine proved mRNA manufacturing at scale. Now the same lipid nanoparticle delivery system is being pointed at cancer neoantigens, influenza strains that escape current vaccines, and rare disease enzyme deficiencies. One platform, hundreds of drugs.'},
+      {label:'CRISPR Therapeutic Classes', content:'Base editing, prime editing, and epigenetic editing extend the original Cas9 scissors into precise rewriters. Each new editing class is a platform for dozens of diseases. Casgevy\'s approval de-risked the entire CRISPR therapeutic category for investors and regulators.'},
+      {label:'AI as MedTech Infrastructure', content:'Foundation models (GPT-4, Med-PaLM, BioMedLM) trained on medical literature are becoming platforms. Fine-tune once on clinical notes → build 40 specialty applications. The same infrastructure enables radiology AI, drug interaction checking, and clinical trial matching.'},
+      {label:'FHIR as the Data Rail', content:'HL7 FHIR is the interoperability standard mandated by CMS. Once all EHRs speak FHIR, every health app can tap structured clinical data. FHIR is the infrastructure layer that makes digital therapeutics, RPM, and federated AI feasible at scale.'},
+      {label:'CGM Beyond Diabetes', content:'Continuous glucose monitors built for diabetes are being repurposed for metabolic optimization in healthy individuals, perioperative management, and critical care. The Dexcom G7 is now an FDA-cleared metabolic platform.'},
+      {label:'Liquid Biopsy Expansion', content:'Multi-cancer early detection started as a cancer screening tool. The same cfDNA technology is being applied to organ transplant rejection monitoring, prenatal screening (cfDNA NIPT), and tracking tumor evolution during cancer treatment.'},
+    ]
+  },
+  equity:{
+    label:'The Equity Gap in MedTech',
+    body:`Every stage of medical technology development embeds — or corrects — inequity. From who is enrolled in clinical trials to which ZIP codes get devices covered by Medicaid, the design of healthcare technology is a political act.`,
+    mechanisms:[
+      {label:'Clinical Trial Diversity Gap', content:'Historically, 75% of clinical trial participants were white men. Drugs approved on this basis may have different efficacy or safety profiles in women, BIPOC patients, and elderly populations. FDA\'s 2022 diversity guidance and NIH\'s inclusion mandates are starting to shift this.'},
+      {label:'Algorithm Bias', content:'Pulse oximeters overestimate SpO2 in patients with darker skin tones — a known flaw that led to undertreatment during COVID. AI trained on majority-white imaging datasets performs worse on BIPOC patients. Bias is an engineering choice, not an inevitability.'},
+      {label:'Device Access & Coverage', content:'CGMs and wearable RPM devices require a smartphone, broadband, a CMS coverage determination, AND a prescribing physician. Each is a gatekeeping layer. The intersection of poverty, rural location, and lack of insurance amplifies each one.'},
+      {label:'Language & Literacy', content:'93M Americans have low health literacy. Digital therapeutics, apps, and patient portals designed at a 12th-grade reading level are inaccessible to a third of the population. Plain language standards for digital health are essentially nonexistent.'},
+      {label:'Neglected Disease Research', content:'Market failure in neglected tropical diseases (dengue, Chagas, leishmaniasis) means zero commercial pipeline despite billions at risk globally. NIH and BARDA programs partially compensate, but the funding gap is orders of magnitude.'},
+      {label:'Community-Based Innovation', content:'Federally Qualified Health Centers and tribal health programs are closest to underserved populations — but farthest from technology development. Embedding NIH-funded innovation testbeds in FQHCs would fundamentally change who healthcare technology is built for.'},
+    ]
+  }
 };
 
-const SECTOR_COLORS = { 'AI/ML':'#4f8cff', 'Biotech':'#00d4aa', 'Genomics':'#b06aff', 'Medtech':'#ff6b6b', 'Digital':'#f5a623' };
+const PIPELINE_STAGES = [
+  {
+    stage:'Basic Discovery', trl:'TRL 1–2', color:'#c0392b',
+    items:[
+      {name:'Protein Folding AI',note:'AlphaFold3 drug targets',tags:['cancer','rare','chronic','infectious']},
+      {name:'CRISPR Base Editors',note:'Adenine & cytosine editing',tags:['rare','cancer']},
+      {name:'Neural Organoids',note:'Brain disease modeling',tags:['neuro','mental']},
+      {name:'Quantum Biosimulation',note:'Molecular dynamics at scale',tags:['cancer','rare']},
+      {name:'Psychedelic Neuroplasticity',note:'Psilocybin mechanistic studies',tags:['mental']},
+    ]
+  },
+  {
+    stage:'Preclinical Research', trl:'TRL 3–4', color:'#b8860b',
+    items:[
+      {name:'CAR-NK Cell Therapy',note:'Next-gen cancer immunotherapy',tags:['cancer']},
+      {name:'Exosome Drug Delivery',note:'Extracellular vesicle vectors',tags:['cancer','rare']},
+      {name:'Oral GLP-1 Agonists',note:'Beyond Ozempic: pill form',tags:['chronic']},
+      {name:'SHERLOCK Diagnostics',note:'CRISPR-based point-of-care test',tags:['infectious','rare']},
+      {name:'Microbiome Modulators',note:'Engineered probiotic therapeutics',tags:['chronic','mental']},
+    ]
+  },
+  {
+    stage:'Clinical Trials (Phase 1–2)', trl:'TRL 5–6', color:'#1a4f8a',
+    items:[
+      {name:'mRNA Cancer Vaccines',note:'Personalized neoantigen vaccines',tags:['cancer']},
+      {name:'Anti-Tau Antibodies',note:'Alzheimer\'s tau clearance',tags:['neuro']},
+      {name:'Epigenetic Reprogramming',note:'Cellular age reversal studies',tags:['chronic','cancer']},
+      {name:'Closed-Loop DBS',note:'Responsive deep brain stimulation',tags:['mental','neuro']},
+      {name:'Synthetic Phage Therapy',note:'Engineered AMR bacterial killers',tags:['infectious']},
+      {name:'Prime Editing Trials',note:'Precision DNA rewriting in vivo',tags:['rare']},
+    ]
+  },
+  {
+    stage:'Late-Stage Clinical (Phase 3)', trl:'TRL 7', color:'#5b2d8e',
+    items:[
+      {name:'Personalized CRISPR (SCD)',note:'Post-Casgevy next generation',tags:['rare']},
+      {name:'Multi-Cancer Blood Tests',note:'MCED for Medicare coverage',tags:['cancer']},
+      {name:'BCI Communication Device',note:'ALS / paralysis speech decode',tags:['neuro']},
+      {name:'AI Sepsis Prediction',note:'ICU early warning 6hr ahead',tags:['infectious','chronic']},
+    ]
+  },
+  {
+    stage:'FDA Review / Approved', trl:'TRL 8–9', color:'#0d7a6b',
+    items:[
+      {name:'Casgevy (CRISPR)',note:'Sickle cell disease — Approved 2023',tags:['rare']},
+      {name:'Leqembi (Anti-Amyloid)',note:'Early Alzheimer\'s — Approved 2023',tags:['neuro']},
+      {name:'AI Diabetic Retinopathy',note:'First autonomous AI Dx — FDA',tags:['chronic']},
+      {name:'Zio Patch iRhythm',note:'14-day AFib monitoring',tags:['chronic']},
+      {name:'Dexcom G7 CGM',note:'Real-time glucose streaming',tags:['chronic']},
+      {name:'reSET-O DTx',note:'Prescription opioid use app',tags:['mental']},
+    ]
+  },
+];
 
-let currentFilter = 'all';
-let selectedCompareTechs = [];
-let scenarioHorizon = 5;
-let charts = {};
-
-/* ─── CHART DEFAULTS ───────────────────────────────────────────────── */
-const C = {
-  grid: 'rgba(120,160,255,0.06)',
-  text: 'rgba(138,155,196,0.9)',
-  tick: { color:'rgba(138,155,196,0.7)', font:{ family:"'DM Mono', monospace", size:10 } }
-};
-function mkAxes(xLabel='', yLabel='') {
-  return {
-    x: { grid:{ color:C.grid }, ticks:{ ...C.tick, ...(xLabel?{callback:v=>v+xLabel}:{}) } },
-    y: { grid:{ color:C.grid }, ticks:{ ...C.tick, ...(yLabel?{callback:v=>yLabel+v}:{}) }, beginAtZero:true }
-  };
-}
-
-/* ─── PANEL SWITCH ─────────────────────────────────────────────────── */
-function showPanel(id, btn) {
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('panel-'+id).classList.add('active');
+/* ═══════════════════════ NAVIGATION ═══════════════════════ */
+function goPage(id, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.section-pill').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* ─── OVERVIEW CHARTS ──────────────────────────────────────────────── */
-function initOverview() {
-  const years = ['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024'];
-  const fed = [156,162,170,178,189,212,228,248,253,284];
-  const priv = [98,105,118,135,152,180,210,238,265,310];
-
-  if (charts.trend) charts.trend.destroy();
-  charts.trend = new Chart(document.getElementById('trendChart'), {
-    type:'line',
-    data:{ labels:years, datasets:[
-      { label:'Federal', data:fed, borderColor:'#4f8cff', backgroundColor:'rgba(79,140,255,0.07)', fill:true, tension:0.4, borderWidth:2, pointRadius:3, pointBackgroundColor:'#4f8cff' },
-      { label:'Private Match', data:priv, borderColor:'#00d4aa', backgroundColor:'transparent', borderDash:[5,3], tension:0.4, borderWidth:2, pointRadius:3, pointBackgroundColor:'#00d4aa' }
-    ]},
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ color:C.text, font:{ family:"'DM Mono', monospace", size:10 }, boxWidth:10, padding:12 } } }, scales:mkAxes('','$') }
+/* ═══════════════════════ TECH CARDS ═══════════════════════ */
+let activeFilters={sector:'all',underserved:false,early:false};
+function renderTechCards(){
+  const grid=document.getElementById('techCardGrid');
+  const filtered=TECHS.filter(t=>{
+    const sectorOk=activeFilters.sector==='all'||t.sector===activeFilters.sector;
+    const underservedOk=!activeFilters.underserved||t.underserved;
+    const earlyOk=!activeFilters.early||t.earlyStage;
+    return sectorOk&&underservedOk&&earlyOk;
   });
-
-  if (charts.sector) charts.sector.destroy();
-  charts.sector = new Chart(document.getElementById('sectorChart'), {
-    type:'doughnut',
-    data:{ labels:['AI/ML','Genomics','Medtech','Digital Health','Biotech'],
-      datasets:[{ data:[24,19,17,15,25], backgroundColor:['#4f8cff','#b06aff','#ff6b6b','#f5a623','#00d4aa'], borderWidth:0 }] },
-    options:{ responsive:true, maintainAspectRatio:false, cutout:'60%',
-      plugins:{ legend:{ position:'right', labels:{ color:C.text, font:{ family:"'DM Mono', monospace", size:10 }, boxWidth:10, padding:10 } } } }
-  });
-
-  if (charts.agency) charts.agency.destroy();
-  charts.agency = new Chart(document.getElementById('agencyChart'), {
-    type:'bar',
-    data:{ labels:['NIH','CMS','BARDA','DoD','ARPA-H'],
-      datasets:[{ data:[47.2,18.4,8.1,6.3,2.5], backgroundColor:['#4f8cff','#00d4aa','#b06aff','#ff6b6b','#f5a623'], borderRadius:4, borderSkipped:false }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:mkAxes('','$') }
-  });
-
-  if (charts.trl) charts.trl.destroy();
-  charts.trl = new Chart(document.getElementById('trlChart'), {
-    type:'bar',
-    data:{ labels:['TRL 1–3','TRL 4–6','TRL 7–9'],
-      datasets:[{ data:[28,41,31], backgroundColor:['#ff6b6b','#f5a623','#00d4aa'], borderRadius:4, borderSkipped:false }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:mkAxes('%','') }
-  });
-}
-
-/* ─── TECH TABLE ───────────────────────────────────────────────────── */
-function renderTechTable(list) {
-  const tbody = document.getElementById('techTableBody');
-  tbody.innerHTML = list.map(t => {
-    const trlPct = (t.trl/9*100).toFixed(0);
-    const trlColor = t.trl>=8?'#00d4aa':t.trl>=6?'#f5a623':'#ff6b6b';
-    const trlLabel = t.trl>=8?'badge-green':t.trl>=6?'badge-amber':'badge-red';
-    const sectorColor = SECTOR_COLORS[t.sector]||'#4f8cff';
-    const eqClass = t.equity==='Very High'||t.equity==='High'?'badge-green':t.equity==='Moderate'?'badge-amber':'badge-red';
-    return `<tr onclick="toggleTechDetail(${t.id})" id="tr-${t.id}">
-      <td class="tech-name-cell">${t.name}</td>
-      <td><span class="badge" style="background:${sectorColor}18;color:${sectorColor};border:1px solid ${sectorColor}30">${t.sector}</span></td>
-      <td style="font-family:var(--mono);font-size:10px">${t.agency}</td>
-      <td style="color:#4f8cff;font-family:var(--mono);font-weight:500">$${t.invest}B</td>
-      <td style="color:#00d4aa;font-family:var(--mono)">+${t.growth}%/yr</td>
-      <td>
-        <div style="display:flex;align-items:center;gap:6px">
-          <div class="trl-bar"><div class="trl-fill" style="width:${trlPct}%;background:${trlColor}"></div></div>
-          <span style="font-family:var(--mono);font-size:10px;color:${trlColor}">${t.trl}/9</span>
+  grid.innerHTML=filtered.map(t=>`
+    <div class="tech-card ${t.color}" id="tc-${t.id}" onclick="toggleTechCard('${t.id}')">
+      <div class="tc-sector">${t.sector}</div>
+      <div class="tc-name">${t.name}</div>
+      <div class="tc-deck">${t.deck}</div>
+      <div class="tc-tags">
+        ${t.tags.map((tag,i)=>`<span class="tc-tag label-tag ${t.tagClasses[i]}">${tag}</span>`).join('')}
+        ${t.underserved?'<span class="tc-tag label-tag lt-red">Underserved</span>':''}
+        ${t.earlyStage?'<span class="tc-tag label-tag lt-violet">Early Stage</span>':''}
+      </div>
+      <div class="tc-meta">
+        <div class="tc-meta-item"><strong>TRL ${t.trl}/9</strong>Readiness</div>
+        <div class="tc-meta-item"><strong>${t.growth}</strong>Annual growth</div>
+      </div>
+      <div class="tc-expand">
+        <h4>What it actually does</h4>
+        <p>${t.whatItDoes}</p>
+        <h4>The health problem it solves</h4>
+        <p>${t.healthProblem}</p>
+        <div class="tc-impact-grid">
+          <div class="tc-impact-block">
+            <div class="tc-impact-val" style="color:var(--ink)">${t.clinicalImpact}</div>
+            <div class="tc-impact-label">${t.clinicalLabel}</div>
+          </div>
+          <div class="tc-impact-block">
+            <div class="tc-impact-val" style="color:var(--ink)">${t.deployment}</div>
+            <div class="tc-impact-label">${t.deployLabel}</div>
+          </div>
+          <div class="tc-impact-block">
+            <div class="tc-impact-val" style="color:var(--red)">${t.bottleneck}</div>
+            <div class="tc-impact-label">${t.bottleneckLabel}</div>
+          </div>
         </div>
-      </td>
-      <td><span class="badge ${trlLabel}">${t.trl>=8?'Deploy Ready':t.trl>=6?'Advanced Dev':'Early Stage'}</span></td>
-      <td><span class="badge ${eqClass}">${t.equity}</span></td>
-      <td style="font-family:var(--mono);font-size:10px">${t.timeline}</td>
-    </tr>`;
-  }).join('');
-}
-
-let openDetailId = null;
-function toggleTechDetail(id) {
-  const drawer = document.getElementById('techDetail');
-  const t = TECHS.find(x=>x.id===id);
-  if (openDetailId === id) {
-    drawer.classList.remove('open');
-    document.getElementById('tr-'+id)?.classList.remove('selected');
-    openDetailId = null;
-    return;
-  }
-  if (openDetailId !== null) document.getElementById('tr-'+openDetailId)?.classList.remove('selected');
-  document.getElementById('tr-'+id)?.classList.add('selected');
-  openDetailId = id;
-
-  const budgetYears = ['FY24','FY25','FY26','FY27','FY28'];
-  drawer.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:14px">
-      <div>
-        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin-bottom:4px">${t.sector} · ${t.agency}</div>
-        <div style="font-family:var(--serif);font-size:1.4rem;color:var(--text)">${t.name}</div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-green" onclick="addToCompare(${t.id})">+ Add to Compare</button>
-        <button class="btn" onclick="loadTechScenario(${t.id})">Model Cost Scenario</button>
-      </div>
-    </div>
-    <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:14px">${t.moa}</div>
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px">
-      <div class="card" style="padding:12px;text-align:center"><div class="card-label" style="margin-bottom:4px">FY24 Invest</div><div style="font-family:var(--serif);font-size:1.2rem;color:#4f8cff">$${t.invest}B</div></div>
-      <div class="card" style="padding:12px;text-align:center"><div class="card-label" style="margin-bottom:4px">5-yr Growth</div><div style="font-family:var(--serif);font-size:1.2rem;color:#00d4aa">+${t.growth}%</div></div>
-      <div class="card" style="padding:12px;text-align:center"><div class="card-label" style="margin-bottom:4px">TRL Level</div><div style="font-family:var(--serif);font-size:1.2rem;color:${t.trlColor}">${t.trl}/9</div></div>
-      <div class="card" style="padding:12px;text-align:center"><div class="card-label" style="margin-bottom:4px">Proj ROI</div><div style="font-family:var(--serif);font-size:1.2rem;color:#f5a623">${t.roi}×</div></div>
-      <div class="card" style="padding:12px;text-align:center"><div class="card-label" style="margin-bottom:4px">Equity Score</div><div style="font-family:var(--serif);font-size:1.2rem;color:${t.eqScore>=75?'#00d4aa':t.eqScore>=50?'#f5a623':'#ff6b6b'}">${t.eqScore}</div></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div>
-        <div class="section-title">5-Year Budget Projection ($B)</div>
-        <div class="chart-wrap" style="height:140px"><canvas id="miniChart-${t.id}" role="img" aria-label="5-year budget projection for ${t.name}"></canvas></div>
-      </div>
-      <div>
-        <div class="section-title">Investment Profile</div>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Disease Area: <span style="color:var(--text2)">${t.diseaseArea}</span></div>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:6px">FDA Pathway: <span style="color:var(--text2)">${t.fdaPath}</span></div>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Jobs Created: <span style="color:var(--text2)">${(t.jobs/1000).toFixed(0)}K direct/indirect</span></div>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Time to Scale: <span style="color:var(--text2)">${t.timeline}</span></div>
-        <div style="font-size:11px;color:var(--text3)">Equity Impact: <span class="badge ${t.equity==='High'||t.equity==='Very High'?'badge-green':t.equity==='Moderate'?'badge-amber':'badge-red'}">${t.equity}</span></div>
-      </div>
-    </div>`;
-  drawer.classList.add('open');
-
-  setTimeout(()=>{
-    const miniCtx = document.getElementById('miniChart-'+t.id);
-    if (miniCtx) {
-      new Chart(miniCtx, {
-        type:'bar',
-        data:{ labels:budgetYears, datasets:[{ data:t.budget5, backgroundColor:t.trlColor+'88', borderRadius:3, borderSkipped:false }] },
-        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ x:{ grid:{display:false}, ticks:{ ...C.tick } }, y:{ grid:{ color:C.grid }, ticks:{ ...C.tick, callback:v=>'$'+v+'B' }, beginAtZero:true } } }
-      });
-    }
-  }, 50);
-}
-
-function filterTech(sector, btn) {
-  currentFilter = sector;
-  if (btn) {
-    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-  applyFilters();
-}
-
-function searchTech() { applyFilters(); }
-
-function applyFilters() {
-  const sector = currentFilter;
-  const trl = document.getElementById('trlFilter').value;
-  const q = document.getElementById('techSearch').value.toLowerCase();
-  let list = [...TECHS];
-  if (sector !== 'all') list = list.filter(t=>t.sector.includes(sector));
-  if (trl === 'high') list = list.filter(t=>t.trl>=7);
-  else if (trl === 'mid') list = list.filter(t=>t.trl>=4&&t.trl<7);
-  else if (trl === 'low') list = list.filter(t=>t.trl<4);
-  if (q) list = list.filter(t=>t.name.toLowerCase().includes(q)||t.agency.toLowerCase().includes(q)||t.diseaseArea.toLowerCase().includes(q));
-  renderTechTable(list);
-  document.getElementById('techDetail').classList.remove('open');
-  openDetailId = null;
-}
-
-/* ─── COMPARE ──────────────────────────────────────────────────────── */
-function initCompare() {
-  const grid = document.getElementById('compareSelectGrid');
-  grid.innerHTML = TECHS.map(t=>{
-    const sc = SECTOR_COLORS[t.sector]||'#4f8cff';
-    return `<div class="compare-card" id="ccard-${t.id}" onclick="toggleCompare(${t.id})">
-      <div class="compare-card-name">${t.name}</div>
-      <div class="compare-card-sector">${t.sector}</div>
-      <div class="compare-stat"><span class="compare-stat-label">Investment</span><span class="compare-stat-value" style="color:${sc}">$${t.invest}B</span></div>
-      <div class="compare-stat"><span class="compare-stat-label">Growth</span><span class="compare-stat-value" style="color:#00d4aa">+${t.growth}%</span></div>
-      <div class="compare-stat"><span class="compare-stat-label">TRL</span><span class="compare-stat-value">${t.trl}/9</span></div>
-    </div>`;
-  }).join('');
-}
-
-function toggleCompare(id) {
-  const idx = selectedCompareTechs.indexOf(id);
-  if (idx > -1) {
-    selectedCompareTechs.splice(idx,1);
-    document.getElementById('ccard-'+id)?.classList.remove('selected');
-  } else {
-    if (selectedCompareTechs.length >= 5) return;
-    selectedCompareTechs.push(id);
-    document.getElementById('ccard-'+id)?.classList.add('selected');
-  }
-  renderCompare();
-}
-
-function addToCompare(id) {
-  if (!selectedCompareTechs.includes(id) && selectedCompareTechs.length < 5) {
-    selectedCompareTechs.push(id);
-    document.getElementById('ccard-'+id)?.classList.add('selected');
-    showPanel('compare', document.querySelectorAll('.nav-btn')[2]);
-    renderCompare();
-  }
-}
-
-function renderCompare() {
-  const sel = selectedCompareTechs.map(id=>TECHS.find(t=>t.id===id)).filter(Boolean);
-  const results = document.getElementById('compareResults');
-  const prompt = document.getElementById('comparePrompt');
-  if (sel.length < 2) { results.style.display='none'; prompt.style.display='block'; return; }
-  results.style.display='block'; prompt.style.display='none';
-
-  const colors = sel.map(t=>t.trlColor);
-
-  if (charts.radar) charts.radar.destroy();
-  charts.radar = new Chart(document.getElementById('radarChart'), {
-    type:'radar',
-    data:{
-      labels:['Investment','Readiness (TRL)','Equity','Cost-Effectiveness','Growth Rate'],
-      datasets: sel.map((t,i)=>({
-        label:t.name, borderColor:colors[i], backgroundColor:colors[i]+'18', borderWidth:1.5,
-        pointRadius:3, pointBackgroundColor:colors[i],
-        data:[
-          Math.round(t.invest/11.2*100),
-          Math.round(t.trl/9*100),
-          t.eqScore,
-          t.costEff,
-          Math.round(t.growth/67*100)
-        ]
-      }))
-    },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ color:C.text, font:{ family:"'DM Mono', monospace", size:10 }, boxWidth:10, padding:10 } } }, scales:{ r:{ grid:{ color:C.grid }, ticks:{ display:false }, pointLabels:{ color:C.text, font:{ family:"'DM Mono', monospace", size:9 } }, angleLines:{ color:C.grid } } } }
-  });
-
-  if (charts.bubble) charts.bubble.destroy();
-  charts.bubble = new Chart(document.getElementById('bubbleChart'), {
-    type:'bubble',
-    data:{ datasets: sel.map((t,i)=>({
-      label:t.name, backgroundColor:colors[i]+'88', borderColor:colors[i], borderWidth:1.5,
-      data:[{ x:t.invest, y:t.growth, r:Math.max(8, t.trl*2.5) }]
-    }))},
-    options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:20 },
-      plugins:{ legend:{ labels:{ color:C.text, font:{ family:"'DM Mono', monospace", size:10 }, boxWidth:10, padding:10 } } },
-      scales:{ x:{ ...mkAxes('','$').x, title:{ display:true, text:'FY24 Investment ($B)', color:C.text, font:{ family:"'DM Mono', monospace", size:9 } } }, y:{ ...mkAxes('%','').y, title:{ display:true, text:'5-yr Growth Rate (%)', color:C.text, font:{ family:"'DM Mono', monospace", size:9 } } } } }
-  });
-
-  // Matrix
-  const dims = [
-    { key:'invest', label:'FY24 Investment', fmt:v=>'$'+v+'B', best:'max' },
-    { key:'growth', label:'5-yr Growth Rate', fmt:v=>'+'+v+'%', best:'max' },
-    { key:'trl', label:'TRL Level', fmt:v=>v+'/9', best:'max' },
-    { key:'eqScore', label:'Equity Score', fmt:v=>v+'/100', best:'max' },
-    { key:'costEff', label:'Cost-Effectiveness', fmt:v=>v+'/100', best:'max' },
-    { key:'roi', label:'Projected ROI', fmt:v=>v+'×', best:'max' },
-    { key:'jobs', label:'Jobs Created', fmt:v=>(v/1000).toFixed(0)+'K', best:'max' },
-    { key:'timeline', label:'Time to Scale', fmt:v=>v, best:null },
-    { key:'fdaPath', label:'FDA Pathway', fmt:v=>v, best:null },
-    { key:'diseaseArea', label:'Disease Focus', fmt:v=>v, best:null },
-  ];
-
-  const table = document.getElementById('compareMatrix');
-  table.innerHTML = `<thead><tr><th>Dimension</th>${sel.map(t=>`<th style="color:${t.trlColor}">${t.name}</th>`).join('')}</tr></thead>
-    <tbody>${dims.map(dim=>{
-      const vals = sel.map(t=>t[dim.key]);
-      const numVals = vals.map(v=>parseFloat(v));
-      const bestVal = dim.best==='max' ? Math.max(...numVals) : null;
-      const worstVal = dim.best==='max' ? Math.min(...numVals) : null;
-      return `<tr><td>${dim.label}</td>${sel.map((t,i)=>{
-        const v = t[dim.key];
-        const num = parseFloat(v);
-        let cls = '';
-        if (dim.best && !isNaN(num)) {
-          if (num === bestVal) cls = 'best';
-          else if (num === worstVal) cls = 'worst';
-        }
-        return `<td class="${cls}">${dim.fmt(v)}</td>`;
-      }).join('')}</tr>`;
-    }).join('')}</tbody>`;
-}
-
-/* ─── SCENARIOS ─────────────────────────────────────────────────────── */
-const SECTORS_SC = ['AI/ML','Genomics','Medtech','Digital','Biotech'];
-const SECTOR_DEFAULT = { AI:24, Genomics:20, Medtech:17, Digital:20, Biotech:19 };
-let sliderState = { ...SECTOR_DEFAULT };
-
-function initScenarios() {
-  const container = document.getElementById('sectorSliders');
-  container.innerHTML = SECTORS_SC.map(s=>{
-    const key = s.replace('/ML','');
-    const val = sliderState[key] || 20;
-    return `<div class="slider-row">
-      <div class="slider-label-group">
-        <div class="slider-name" style="color:${SECTOR_COLORS[s]||'var(--text2)'}">${s}</div>
-        <div class="slider-meta">Allocation %</div>
-      </div>
-      <input type="range" min="0" max="70" value="${val}" id="sl-${key}" step="1" oninput="updateSectorSlider('${key}',this.value)">
-      <div class="slider-value" id="slv-${key}">${val}%</div>
-    </div>`;
-  }).join('');
-  runScenario();
-}
-
-function updateSectorSlider(key, val) {
-  sliderState[key] = parseInt(val);
-  document.getElementById('slv-'+key).textContent = val+'%';
-  const total = Object.values(sliderState).reduce((a,b)=>a+b,0);
-  const el = document.getElementById('totalAlloc');
-  el.textContent = total+'%';
-  el.style.color = Math.abs(total-100)<=5 ? '#00d4aa' : total>100 ? '#ff6b6b' : '#f5a623';
-  runScenario();
-}
-
-function resetSliders() {
-  Object.entries(SECTOR_DEFAULT).forEach(([k,v])=>{
-    sliderState[k] = v;
-    const sl = document.getElementById('sl-'+k);
-    const slv = document.getElementById('slv-'+k);
-    if(sl) sl.value = v;
-    if(slv) slv.textContent = v+'%';
-  });
-  document.getElementById('totalAlloc').textContent = '100%';
-  document.getElementById('totalAlloc').style.color = '#00d4aa';
-  runScenario();
-}
-
-function setHorizon(h, btn) {
-  scenarioHorizon = h;
-  document.querySelectorAll('.horizon-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('horizonLabel').textContent = h+'-Year';
-  runScenario();
-}
-
-function loadPreset(name) {
-  const p = PRESETS[name];
-  ['AI','Genomics','Medtech','Digital','Biotech'].forEach(k=>{
-    sliderState[k] = p[k];
-    const sl = document.getElementById('sl-'+k);
-    const slv = document.getElementById('slv-'+k);
-    if(sl) sl.value = p[k];
-    if(slv) slv.textContent = p[k]+'%';
-  });
-  document.getElementById('polReg').value = p.reg; document.getElementById('polRegV').textContent = p.reg;
-  document.getElementById('polEq').value = p.eq; document.getElementById('polEqV').textContent = p.eq;
-  document.getElementById('polPP').value = p.pp; document.getElementById('polPPV').textContent = (p.pp/10).toFixed(1)+'×';
-  document.getElementById('polBudget').value = p.budget; document.getElementById('polBudgetV').textContent = '$'+p.budget+'B';
-  const total = p.AI+p.Genomics+p.Medtech+p.Digital+p.Biotech;
-  const el = document.getElementById('totalAlloc');
-  el.textContent = total+'%';
-  el.style.color = Math.abs(total-100)<=5?'#00d4aa':'#ff6b6b';
-  runScenario();
-}
-
-function loadTechScenario(id) {
-  const t = TECHS.find(x=>x.id===id);
-  const sectorMap = { 'AI/ML':'AI', 'Biotech':'Biotech', 'Genomics':'Genomics', 'Medtech':'Medtech', 'Digital':'Digital' };
-  const key = sectorMap[t.sector];
-  if (key) {
-    Object.keys(sliderState).forEach(k=>sliderState[k]=5);
-    sliderState[key] = 70;
-    ['AI','Genomics','Medtech','Digital','Biotech'].forEach(k=>{
-      const sl = document.getElementById('sl-'+k);
-      const slv = document.getElementById('slv-'+k);
-      if(sl) sl.value = sliderState[k];
-      if(slv) slv.textContent = sliderState[k]+'%';
-    });
-    document.getElementById('totalAlloc').textContent = (70+5*4)+'%';
-  }
-  showPanel('scenarios', document.querySelectorAll('.nav-btn')[3]);
-  runScenario();
-}
-
-function runScenario() {
-  const reg = parseInt(document.getElementById('polReg').value)||50;
-  const eq = parseInt(document.getElementById('polEq').value)||40;
-  const pp = parseInt(document.getElementById('polPP').value)||20;
-  const budget = parseInt(document.getElementById('polBudget').value)||284;
-  document.getElementById('polRegV').textContent = reg;
-  document.getElementById('polEqV').textContent = eq;
-  document.getElementById('polPPV').textContent = (pp/10).toFixed(1)+'×';
-  document.getElementById('polBudgetV').textContent = '$'+budget+'B';
-
-  const H = scenarioHorizon;
-  const leverage = pp/10;
-  const totalCapital = budget * leverage * H;
-  const regBoost = 1 + reg/200;
-  const eqBoost = 1 + eq/300;
-
-  const roiBase = 12 * regBoost * eqBoost;
-  const roi = (totalCapital * roiBase / 1000).toFixed(1);
-  const lives = Math.round(budget * H * 0.15 * regBoost);
-  const savings = Math.round(totalCapital * 0.22);
-  const jobs = Math.round(budget * H * 2.8 * regBoost / 1000);
-
-  document.getElementById('res-roi').textContent = '$'+roi+'T';
-  document.getElementById('res-roi-sub').textContent = '▲ '+roiBase.toFixed(1)+'× return';
-  document.getElementById('res-lives').textContent = lives+'M';
-  document.getElementById('res-lives-sub').textContent = H+'-yr cumulative';
-  document.getElementById('res-cost').textContent = '$'+savings+'B';
-  document.getElementById('res-cost-sub').textContent = 'System-wide savings';
-  document.getElementById('res-jobs').textContent = jobs+'K';
-  document.getElementById('res-jobs-sub').textContent = 'Direct + indirect';
-
-  // Cost projection chart
-  const techBudgets = TECHS.slice(0,7).map(t=>{
-    const secKey = t.sector.replace('/ML','');
-    const alloc = (sliderState[secKey]||10)/100;
-    const base = budget * alloc * (t.invest / TECHS.filter(x=>x.sector===t.sector).reduce((a,b)=>a+b.invest,0));
-    const compound = Array.from({length:H}, (_,i)=> +(base * Math.pow(1+t.growth/100*0.4, i)).toFixed(2));
-    return { name:t.name, data:compound, color:t.trlColor };
-  });
-
-  const yearsArr = Array.from({length:H}, (_,i)=>'FY'+(2024+i+1));
-
-  if (charts.scenCost) charts.scenCost.destroy();
-  charts.scenCost = new Chart(document.getElementById('scenarioCostChart'), {
-    type:'bar',
-    data:{ labels:yearsArr, datasets: techBudgets.map(tb=>({
-      label:tb.name, data:tb.data, backgroundColor:tb.color+'88', borderRadius:3, borderSkipped:false
-    }))},
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ color:C.text, font:{ family:"'DM Mono', monospace", size:9 }, boxWidth:8, padding:10 } } },
-      scales:{ x:{ stacked:true, grid:{display:false}, ticks:{ ...C.tick } }, y:{ stacked:true, grid:{ color:C.grid }, ticks:{ ...C.tick, callback:v=>'$'+v.toFixed(0)+'B' } } } }
-  });
-
-  // ROI cumulative line
-  const fedCum = Array.from({length:H}, (_,i)=> +(budget*(i+1)).toFixed(0));
-  const retCum = Array.from({length:H}, (_,i)=> +(budget*(i+1)*roiBase*0.18).toFixed(0));
-
-  if (charts.roi) charts.roi.destroy();
-  charts.roi = new Chart(document.getElementById('roiChart'), {
-    type:'line',
-    data:{ labels:yearsArr, datasets:[
-      { label:'Cumulative Investment ($B)', data:fedCum, borderColor:'#4f8cff', backgroundColor:'rgba(79,140,255,0.08)', fill:true, tension:0.4, borderWidth:2, pointRadius:3 },
-      { label:'Projected Returns ($B)', data:retCum, borderColor:'#00d4aa', backgroundColor:'rgba(0,212,170,0.06)', fill:true, tension:0.4, borderWidth:2, borderDash:[6,3], pointRadius:3 }
-    ]},
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ color:C.text, font:{ family:"'DM Mono', monospace", size:10 }, boxWidth:10, padding:12 } } }, scales:mkAxes('','$') }
-  });
-
-  // Cost breakdown table
-  const costTable = document.getElementById('costBreakdown');
-  const rows = TECHS.map(t=>{
-    const secKey = t.sector.replace('/ML','');
-    const alloc = (sliderState[secKey]||10)/100;
-    const annualFed = +(budget * alloc * (t.invest / (TECHS.filter(x=>x.sector===t.sector).reduce((a,b)=>a+b.invest,0)||1))).toFixed(2);
-    const totalFed = +(annualFed * H).toFixed(1);
-    const private_ = +(totalFed * leverage).toFixed(1);
-    const projected = +(totalFed * t.roi / 3).toFixed(1);
-    const sc = SECTOR_COLORS[t.sector]||'#4f8cff';
-    return { name:t.name, sector:t.sector, sc, annualFed, totalFed, private:private_, projected, roi:t.roi };
-  }).sort((a,b)=>b.totalFed-a.totalFed);
-
-  costTable.innerHTML = `<thead><tr>
-    <th>Technology</th><th>Sector</th><th>Annual Fed ($B)</th><th>${H}-yr Fed Total</th><th>Private Match</th><th>Projected Return</th><th>ROI Multiple</th>
-  </tr></thead>
-  <tbody>${rows.map(r=>`<tr>
-    <td style="font-weight:500;color:var(--text)">${r.name}</td>
-    <td><span class="badge" style="background:${r.sc}18;color:${r.sc};border:1px solid ${r.sc}30">${r.sector}</span></td>
-    <td style="color:#4f8cff;font-family:var(--mono)">$${r.annualFed}B</td>
-    <td style="font-family:var(--mono)">$${r.totalFed}B</td>
-    <td style="font-family:var(--mono);color:#b06aff">$${r.private}B</td>
-    <td style="font-family:var(--mono);color:#00d4aa">$${r.projected}B</td>
-    <td style="font-family:var(--mono);color:#f5a623">${r.roi}×</td>
-  </tr>`).join('')}</tbody>`;
-}
-
-/* ─── POLICY ────────────────────────────────────────────────────────── */
-function initPolicy() {
-  const list = document.getElementById('policyList');
-  list.innerHTML = POLICIES.map((p,i)=>`
-    <div class="policy-card" id="policy-${i}" onclick="togglePolicy(${i})">
-      <div class="policy-header-row">
-        <div>
-          <div class="policy-name">${p.name}</div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px">${p.agency}</div>
-        </div>
-        <span class="badge ${p.statusClass}">${p.status}</span>
-      </div>
-      <div class="policy-body" id="pbody-${i}">
-        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.7">${p.desc}</div>
-        <div class="impact-bar-row"><div class="impact-bar-label">Innovation</div><div class="impact-bar-track"><div class="impact-bar-fill" style="width:${p.innovation}%;background:#4f8cff"></div></div><div class="impact-bar-val">${p.innovation}</div></div>
-        <div class="impact-bar-row"><div class="impact-bar-label">Equity</div><div class="impact-bar-track"><div class="impact-bar-fill" style="width:${p.equity}%;background:#00d4aa"></div></div><div class="impact-bar-val">${p.equity}</div></div>
-        <div class="impact-bar-row"><div class="impact-bar-label">Cost Impact</div><div class="impact-bar-track"><div class="impact-bar-fill" style="width:${p.cost}%;background:#f5a623"></div></div><div class="impact-bar-val">${p.cost}</div></div>
-        <div class="policy-impact-row">
-          ${p.techs.map(t=>`<span class="policy-impact-chip">${t}</span>`).join('')}
-        </div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--accent2);margin-top:10px">${p.impact}</div>
+        <h4>Progress Indicators</h4>
+        ${t.progress.map(p=>`
+          <div class="progress-row">
+            <div class="progress-label">${p.l}</div>
+            <div class="progress-track"><div class="progress-fill" style="width:${p.v}%;background:${p.c}"></div></div>
+            <div class="progress-val">${p.v}</div>
+          </div>`).join('')}
+        <h4 style="margin-top:14px">Policy Angle</h4>
+        <p style="border-left:3px solid var(--teal);padding-left:10px;color:var(--ink2)">${t.policyNote}</p>
       </div>
     </div>`).join('');
-
-  if (charts.policyEff) charts.policyEff.destroy();
-  charts.policyEff = new Chart(document.getElementById('policyEffChart'), {
-    type:'bar',
-    data:{
-      labels: POLICIES.map(p=>p.name.length>20?p.name.substring(0,20)+'…':p.name),
-      datasets:[
-        { label:'Innovation', data:POLICIES.map(p=>p.innovation), backgroundColor:'#4f8cff88', borderRadius:3 },
-        { label:'Equity', data:POLICIES.map(p=>p.equity), backgroundColor:'#00d4aa88', borderRadius:3 },
-        { label:'Cost Impact', data:POLICIES.map(p=>p.cost), backgroundColor:'#f5a62388', borderRadius:3 },
-      ]
-    },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ color:C.text, font:{ family:"'DM Mono', monospace", size:10 }, boxWidth:10, padding:10 } } },
-      scales:{ x:{ grid:{display:false}, ticks:{ ...C.tick, maxRotation:30 } }, y:{ grid:{ color:C.grid }, ticks:{ ...C.tick }, max:100, beginAtZero:true } } }
-  });
-
-  if (charts.policyLink) charts.policyLink.destroy();
-  charts.policyLink = new Chart(document.getElementById('policyLinkChart'), {
-    type:'bar',
-    data:{
-      labels:['AI Diagnostics','mRNA Therap.','CRISPR','Digital Therap.','Telehealth','Liquid Biopsy'],
-      datasets:[{ label:'Policies supporting', data:[3,2,2,3,2,1], backgroundColor:'#b06aff88', borderRadius:4, borderSkipped:false },
-                { label:'Avg policy impact score', data:[75,68,62,82,80,72], backgroundColor:'#4f8cff44', borderRadius:4, borderSkipped:false }]
-    },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ color:C.text, font:{ family:"'DM Mono', monospace", size:10 }, boxWidth:10, padding:10 } } },
-      scales:{ x:{ grid:{display:false}, ticks:{ ...C.tick } }, y:{ grid:{ color:C.grid }, ticks:{ ...C.tick }, beginAtZero:true } } }
-  });
+  if(!filtered.length) grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:4rem;font-family:var(--mono);color:var(--ink4);font-size:12px;letter-spacing:0.1em">No technologies match current filters</div>';
 }
 
-function togglePolicy(i) {
-  const card = document.getElementById('policy-'+i);
-  const body = document.getElementById('pbody-'+i);
-  const isOpen = card.classList.contains('expanded');
-  document.querySelectorAll('.policy-card').forEach(c=>c.classList.remove('expanded'));
-  document.querySelectorAll('[id^=pbody-]').forEach(b=>b.style.display='none');
-  if (!isOpen) { card.classList.add('expanded'); body.style.display='block'; }
+function toggleTechCard(id){
+  const card=document.getElementById('tc-'+id);
+  const isExpanded=card.classList.contains('expanded');
+  document.querySelectorAll('.tech-card.expanded').forEach(c=>c.classList.remove('expanded'));
+  if(!isExpanded) card.classList.add('expanded');
+  if(!isExpanded) card.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-/* ─── INIT ──────────────────────────────────────────────────────────── */
-window.addEventListener('load', ()=>{
-  initOverview();
-  renderTechTable(TECHS);
-  initCompare();
-  initScenarios();
-  initPolicy();
+function toggleSector(sector,btn){
+  activeFilters.sector=sector;
+  document.querySelectorAll('.toggle-chip[data-sector],.toggle-chip[onclick*="toggleSector(\'all"]').forEach(b=>{b.classList.remove('on');b.className=b.className.replace(/c-\w+/,'')});
+  btn.classList.add('on','c-ink');
+  renderTechCards();
+}
+function toggleFilter(type){
+  const btn=document.getElementById('toggle'+type.charAt(0).toUpperCase()+type.slice(1));
+  activeFilters[type]=!activeFilters[type];
+  btn.classList.toggle('on');
+  btn.classList.toggle('c-red');
+  renderTechCards();
+}
+
+/* ═══════════════════════ UNDERFUNDED ═══════════════════════ */
+function renderUnderfunded(){
+  const list=document.getElementById('underfundedList');
+  list.innerHTML=UNDERFUNDED.map((u,i)=>`
+    <div class="policy-feature" id="pf-${i}">
+      <div class="policy-feature-head" onclick="togglePF(${i})">
+        <div class="pf-number">${u.number}</div>
+        <div class="pf-main">
+          <div class="pf-area">${u.area}</div>
+          <div class="pf-title">${u.title}</div>
+        </div>
+        <div class="pf-right">
+          <div class="pf-gap-label">${u.gapLabel}</div>
+          <div class="pf-gap-val">${u.gap}</div>
+        </div>
+      </div>
+      <div class="policy-feature-body">
+        <div class="pf-body-grid">
+          <div>
+            <p class="pf-desc">${u.desc}</p>
+            <div class="pf-what-helps">
+              <h4>What technology & policy can do</h4>
+              ${u.solutions.map(s=>`
+                <div class="solution-item">
+                  <div class="solution-icon" style="background:rgba(0,0,0,0.06)">${s.icon}</div>
+                  <div class="solution-text">${s.text}</div>
+                </div>`).join('')}
+            </div>
+          </div>
+          <div class="pf-stats-col">
+            ${u.stats.map(s=>`
+              <div class="pf-stat-big">
+                <div class="num" style="color:${u.color}">${s.num}</div>
+                <div class="label">${s.label}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function togglePF(i){
+  const el=document.getElementById('pf-'+i);
+  const isOpen=el.classList.contains('open');
+  document.querySelectorAll('.policy-feature.open').forEach(e=>e.classList.remove('open'));
+  if(!isOpen) el.classList.add('open');
+}
+
+/* ═══════════════════════ MARKET ═══════════════════════ */
+let currentLens='approval';
+function switchLens(key,btn){
+  currentLens=key;
+  document.querySelectorAll('.lens-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMarketContent();
+}
+function renderMarketContent(){
+  const lens=MARKET_LENSES[currentLens];
+  const el=document.getElementById('marketContent');
+  el.innerHTML=`
+    <div class="market-detail active">
+      <div class="md-title">${lens.label}</div>
+      <div class="md-body">${lens.body}</div>
+      <div class="md-mechanisms">
+        ${lens.mechanisms.map(m=>`
+          <div class="mechanism-block">
+            <div class="mb-label">${m.label}</div>
+            <div class="mb-content">${m.content}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+/* ═══════════════════════ PIPELINE ═══════════════════════ */
+let activeDiseaseFilter=null;
+function renderPipeline(){
+  const el=document.getElementById('pipelineStages');
+  el.innerHTML=PIPELINE_STAGES.map(stage=>{
+    const items=stage.items.filter(item=>!activeDiseaseFilter||item.tags.includes(activeDiseaseFilter));
+    if(!items.length) return '';
+    return `<div class="pipeline-stage">
+      <div class="ps-label-col">
+        <div class="ps-stage-name" style="color:${stage.color}">${stage.stage}</div>
+        <div class="ps-trl">${stage.trl}</div>
+      </div>
+      <div class="ps-cards">
+        ${items.map(item=>`
+          <div class="ps-item ${activeDiseaseFilter&&item.tags.includes(activeDiseaseFilter)?'highlighted':''}">
+            <strong>${item.name}</strong>
+            <span>${item.note}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div style="height:1px;background:var(--border);margin:4px 0 4px 156px"></div>`;
+  }).join('');
+}
+
+function highlightPipeline(tag){
+  activeDiseaseFilter=tag;
+  document.querySelectorAll('.toggle-chip[onclick*="highlightPipeline"]').forEach(b=>{b.classList.remove('on','c-teal')});
+  if(tag){
+    event.target.classList.add('on','c-teal');
+  }
+  renderPipeline();
+}
+
+/* ═══════════════════════ CHARTS ═══════════════════════ */
+function initCharts(){
+  // TRL Map (Market page)
+  const trlCtx=document.getElementById('trlMapChart');
+  if(trlCtx){
+    new Chart(trlCtx,{
+      type:'bar',
+      data:{
+        labels:['AI Diagnostics','mRNA Therap.','Digital Therap.','Telehealth','Wearables','Pt-of-Care Dx','Liquid Biopsy','CRISPR','Federated AI','Synth. Biology','BCI','Proteomics'],
+        datasets:[{
+          label:'Current TRL',
+          data:[9,8,9,9,9,8,7,7,6,5,5,5],
+          backgroundColor:['#1a4f8a','#0d7a6b','#1a4f8a','#b8860b','#0d7a6b','#c0392b','#c0392b','#5b2d8e','#1a4f8a','#b8860b','#5b2d8e','#5b2d8e'].map(c=>c+'cc'),
+          borderColor:['#1a4f8a','#0d7a6b','#1a4f8a','#b8860b','#0d7a6b','#c0392b','#c0392b','#5b2d8e','#1a4f8a','#b8860b','#5b2d8e','#5b2d8e'],
+          borderWidth:1.5,borderRadius:4,borderSkipped:false
+        }]
+      },
+      options:{
+        indexAxis:'y',
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`TRL ${ctx.raw}/9`}}},
+        scales:{
+          x:{min:0,max:9,ticks:{callback:v=>'TRL '+v,color:'#6b5c40',font:{family:"'Space Mono',monospace",size:10}},grid:{color:'rgba(0,0,0,0.06)'}},
+          y:{ticks:{color:'#3d3020',font:{family:"'Space Grotesk',sans-serif",size:11}},grid:{display:false}}
+        }
+      }
+    });
+  }
+
+  // Timeline chart
+  const tlCtx=document.getElementById('timelineChart');
+  if(tlCtx){
+    new Chart(tlCtx,{
+      type:'bar',
+      data:{
+        labels:['Software / DTx','AI (medical imaging)','Wearable Devices','Vaccine Platforms','Small Molecule Drugs','Medical Devices (implant)','Gene Therapy','Cell Therapy'],
+        datasets:[{
+          label:'Avg Years: Discovery → Patient',
+          data:[2,4,4,6,12,7,15,12],
+          backgroundColor:['#0d7a6b88','#1a4f8a88','#0d7a6b88','#b8860b88','#c0392b88','#5b2d8e88','#c0392b88','#5b2d8e88'],
+          borderColor:['#0d7a6b','#1a4f8a','#0d7a6b','#b8860b','#c0392b','#5b2d8e','#c0392b','#5b2d8e'],
+          borderWidth:1.5,borderRadius:4,borderSkipped:false
+        }]
+      },
+      options:{
+        indexAxis:'y',responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{
+          x:{ticks:{callback:v=>v+'yr',color:'#6b5c40',font:{family:"'Space Mono',monospace",size:10}},grid:{color:'rgba(0,0,0,0.06)'}},
+          y:{ticks:{color:'#3d3020',font:{family:"'Space Grotesk',sans-serif",size:10}},grid:{display:false}}
+        }
+      }
+    });
+  }
+
+  // Funding mix
+  const fmCtx=document.getElementById('fundingMixChart');
+  if(fmCtx){
+    new Chart(fmCtx,{
+      type:'bar',
+      data:{
+        labels:['Basic Research','Preclinical','Phase 1','Phase 2','Phase 3','FDA Review','Commercialization'],
+        datasets:[
+          {label:'NIH / Federal',data:[90,50,30,15,10,5,2],backgroundColor:'#1a4f8a88',borderColor:'#1a4f8a',borderWidth:1.5,borderRadius:3,stack:'a'},
+          {label:'ARPA-H / BARDA',data:[5,20,15,10,5,2,0],backgroundColor:'#0d7a6b88',borderColor:'#0d7a6b',borderWidth:1.5,borderRadius:3,stack:'a'},
+          {label:'Venture Capital',data:[1,10,30,45,35,10,20],backgroundColor:'#b8860b88',borderColor:'#b8860b',borderWidth:1.5,borderRadius:3,stack:'a'},
+          {label:'Big Pharma / Strategics',data:[1,5,10,20,45,70,60],backgroundColor:'#5b2d8e88',borderColor:'#5b2d8e',borderWidth:1.5,borderRadius:3,stack:'a'},
+          {label:'Philanthropy',data:[3,15,15,10,5,3,2],backgroundColor:'#c0392b88',borderColor:'#c0392b',borderWidth:1.5,borderRadius:3,stack:'a'},
+        ]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#3d3020',font:{family:"'Space Mono',monospace",size:9},boxWidth:10,padding:10}}},
+        scales:{
+          x:{stacked:true,ticks:{color:'#6b5c40',font:{family:"'Space Mono',monospace",size:9},maxRotation:30},grid:{display:false}},
+          y:{stacked:true,max:100,ticks:{callback:v=>v+'%',color:'#6b5c40',font:{family:"'Space Mono',monospace",size:9}},grid:{color:'rgba(0,0,0,0.06)'}}
+        }
+      }
+    });
+  }
+}
+
+/* ═══════════════════════ INIT ═══════════════════════ */
+window.addEventListener('load',()=>{
+  renderTechCards();
+  renderUnderfunded();
+  renderMarketContent();
+  renderPipeline();
+  initCharts();
+  // Re-init charts when market/pipeline page becomes visible
+  document.querySelectorAll('.section-pill').forEach(btn=>{
+    btn.addEventListener('click',()=>{setTimeout(initCharts,100)});
+  });
 });
 </script>
 </body>
